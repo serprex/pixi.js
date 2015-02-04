@@ -487,7 +487,7 @@ Graphics.prototype.arc = function(cx, cy, radius, startAngle, endAngle, anticloc
         points = this.currentPath.shape.points;
     }
 
-    if (startAngle === endAngle)return this;
+    if (startAngle === endAngle){return this;}
 
     if( !anticlockwise && endAngle <= startAngle )
     {
@@ -501,7 +501,7 @@ Graphics.prototype.arc = function(cx, cy, radius, startAngle, endAngle, anticloc
     var sweep = anticlockwise ? (startAngle - endAngle) *-1 : (endAngle - startAngle);
     var segs =  Math.ceil( Math.abs(sweep)/ (Math.PI * 2) ) * 40;
 
-    if( sweep === 0 ) return this;
+    if( sweep === 0 ) {return this;}
 
     var theta = sweep/(segs*2);
     var theta2 = theta*2;

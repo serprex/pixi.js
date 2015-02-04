@@ -6,9 +6,7 @@ var SystemRenderer = require('../SystemRenderer'),
     BlendModeManager = require('./managers/BlendModeManager'),
     RenderTarget = require('./utils/RenderTarget'),
     ObjectRenderer = require('./utils/ObjectRenderer'),
-    math = require('../../math'),
     utils = require('../../utils'),
-
     CONST = require('../../const');
 
 /**
@@ -310,18 +308,11 @@ WebGLRenderer.prototype.updateTexture = function (texture)
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, texture.scaleMode === CONST.scaleModes.LINEAR ? gl.LINEAR : gl.NEAREST);
     }
 
-    if (!texture.isPowerOfTwo)
-    {
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-    }
-    else
-    {
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
-    }
+	var clamp = texture.isPowerOfTwo ? gl.REPEAT : gl.CLAMP_TO_EDGE;
+	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, clamp);
+	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, clamp);
 
-    return  texture._glTextures[gl.id];
+    return texture._glTextures[gl.id];
 };
 
 WebGLRenderer.prototype.destroyTexture = function (texture)
@@ -336,6 +327,7 @@ WebGLRenderer.prototype.destroyTexture = function (texture)
     if (texture._glTextures[this.gl.id])
     {
         this.gl.deleteTexture(texture._glTextures[this.gl.id]);
+		delete texture._glTextures[this.gl.id];
     }
 };
 

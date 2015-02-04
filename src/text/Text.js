@@ -325,6 +325,8 @@ Text.prototype.updateTexture = function ()
     this._width = this.canvas.width;
     this._height = this.canvas.height;
 
+	this.texture.baseTexture.dispose();
+	this.texture.baseTexture._glTextures.length = 0;
     this.texture.update();
 
     this.dirty = false;

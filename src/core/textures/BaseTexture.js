@@ -290,19 +290,7 @@ BaseTexture.prototype.destroy = function ()
 {
     if (this.imageUrl)
     {
-        delete utils.BaseTextureCache[this.imageUrl];
-        delete utils.TextureCache[this.imageUrl];
-
         this.imageUrl = null;
-
-        if (!navigator.isCocoonJS)
-        {
-            this.source.src = '';
-        }
-    }
-    else if (this.source && this.source._pixiId)
-    {
-        delete utils.BaseTextureCache[this.source._pixiId];
     }
 
     this.source = null;
@@ -332,76 +320,4 @@ BaseTexture.prototype.updateSourceImage = function (newSrc)
     this.source.src = newSrc;
 
     this.loadSource(this.source);
-};
-
-/**
- * Helper function that creates a base texture from the given image url.
- * If the image is not in the base texture cache it will be created and loaded.
- *
- * @static
- * @param imageUrl {string} The image url of the texture
- * @param [crossorigin=(auto)] {boolean} Should use anonymouse CORS? Defaults to true if the URL is not a data-URI.
- * @param [scaleMode=scaleModes.DEFAULT] {number} See {@link scaleModes} for possible values
- * @return BaseTexture
- */
-BaseTexture.fromImage = function (imageUrl, crossorigin, scaleMode)
-{
-    var baseTexture = utils.BaseTextureCache[imageUrl];
-
-    if (crossorigin === undefined && imageUrl.indexOf('data:') !== 0)
-    {
-        crossorigin = true;
-    }
-
-    if (!baseTexture)
-    {
-        // new Image() breaks tex loading in some versions of Chrome.
-        // See https://code.google.com/p/chromium/issues/detail?id=238071
-        var image = new Image();//document.createElement('img');
-        if (crossorigin)
-        {
-            image.crossOrigin = '';
-        }
-
-        baseTexture = new BaseTexture(image, scaleMode);
-        baseTexture.imageUrl = imageUrl;
-
-        image.src = imageUrl;
-
-        utils.BaseTextureCache[imageUrl] = baseTexture;
-
-        // if there is an @2x at the end of the url we are going to assume its a highres image
-        if ( imageUrl.indexOf(CONST.RETINA_PREFIX + '.') !== -1)
-        {
-            baseTexture.resolution = 2;
-        }
-    }
-
-    return baseTexture;
-};
-
-/**
- * Helper function that creates a base texture from the given canvas element.
- *
- * @static
- * @param canvas {Canvas} The canvas element source of the texture
- * @param scaleMode {number} See {{#crossLink "PIXI/scaleModes:property"}}scaleModes{{/crossLink}} for possible values
- * @return BaseTexture
- */
-BaseTexture.fromCanvas = function (canvas, scaleMode)
-{
-    if (!canvas._pixiId)
-    {
-        canvas._pixiId = 'canvas_' + utils.uuid();
-    }
-
-    var baseTexture = utils.BaseTextureCache[canvas._pixiId];
-
-    if (!baseTexture)
-    {
-        baseTexture = new BaseTexture(canvas, scaleMode);
-        utils.BaseTextureCache[canvas._pixiId] = baseTexture;
-    }
-
-    return baseTexture;
 };

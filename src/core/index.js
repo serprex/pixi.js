@@ -19,10 +19,6 @@ var core = module.exports = {
     DisplayObject:          require('./display/DisplayObject'),
     Container: require('./display/Container'),
 
-    // legacy..
-    Stage:                  require('./display/Container'),
-    DisplayObjectContainer: require('./display/Container'),
-
     Sprite:                 require('./sprites/Sprite'),
     ParticleContainer:            require('./particles/ParticleContainer'),
     SpriteRenderer:         require('./sprites/webgl/SpriteRenderer'),
@@ -37,7 +33,6 @@ var core = module.exports = {
     Texture:                require('./textures/Texture'),
     BaseTexture:            require('./textures/BaseTexture'),
     RenderTexture:          require('./textures/RenderTexture'),
-    VideoBaseTexture:       require('./textures/VideoBaseTexture'),
 
     // renderers - canvas
     CanvasRenderer:         require('./renderers/canvas/CanvasRenderer'),

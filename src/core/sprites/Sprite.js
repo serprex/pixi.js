@@ -8,12 +8,6 @@ var math = require('../math'),
 /**
  * The Sprite object is the base for all textured objects that are rendered to the screen
  *
- * A sprite can be created directly from an image like this:
- *
- * ```js
- * var sprite = new Sprite.fromImage('assets/image.png');
- * ```
- *
  * @class Sprite
  * @extends Container
  * @namespace PIXI
@@ -421,39 +415,4 @@ Sprite.prototype.renderCanvas = function (renderer)
     {
         renderer.maskManager.popMask(renderer);
     }
-};
-
-// some helper functions..
-
-/**
- * Helper function that creates a sprite that will contain a texture from the TextureCache based on the frameId
- * The frame ids are created when a Texture packer file has been loaded
- *
- * @static
- * @param frameId {String} The frame Id of the texture in the cache
- * @return {Sprite} A new Sprite using a texture from the texture cache matching the frameId
- */
-Sprite.fromFrame = function (frameId)
-{
-    var texture = utils.TextureCache[frameId];
-
-    if (!texture)
-    {
-        throw new Error('The frameId "' + frameId + '" does not exist in the texture cache' + this);
-    }
-
-    return new Sprite(texture);
-};
-
-/**
- * Helper function that creates a sprite that will contain a texture based on an image url
- * If the image is not in the texture cache it will be loaded
- *
- * @static
- * @param imageId {String} The image url of the texture
- * @return {Sprite} A new Sprite using a texture from the texture cache matching the image id
- */
-Sprite.fromImage = function (imageId, crossorigin, scaleMode)
-{
-    return new Sprite(Texture.fromImage(imageId, crossorigin, scaleMode));
 };

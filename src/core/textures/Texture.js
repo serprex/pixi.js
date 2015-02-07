@@ -1,5 +1,4 @@
 var BaseTexture = require('./BaseTexture'),
-    VideoBaseTexture = require('./VideoBaseTexture'),
     TextureUvs = require('./TextureUvs'),
     eventTarget = require('../utils/eventTarget'),
     math = require('../math'),
@@ -259,84 +258,6 @@ Texture.prototype._updateUvs = function ()
     this._uvs.y3 = (frame.y + frame.height) / th;
 
     this._uvs.rotate(this.rotation);
-};
-
-/**
- * Helper function that creates a Texture object from the given image url.
- * If the image is not in the texture cache it will be  created and loaded.
- *
- * @static
- * @param imageUrl {string} The image url of the texture
- * @param crossorigin {boolean} Whether requests should be treated as crossorigin
- * @param scaleMode {number} See {{#crossLink "PIXI/scaleModes:property"}}scaleModes{{/crossLink}} for possible values
- * @return Texture
- */
-Texture.fromImage = function (imageUrl, crossorigin, scaleMode)
-{
-    var texture = utils.TextureCache[imageUrl];
-
-    if (!texture)
-    {
-        texture = new Texture(BaseTexture.fromImage(imageUrl, crossorigin, scaleMode));
-        utils.TextureCache[imageUrl] = texture;
-    }
-
-    return texture;
-};
-
-/**
- * Helper function that creates a new Texture based on the given canvas element.
- *
- * @static
- * @param canvas {Canvas} The canvas element source of the texture
- * @param scaleMode {number} See {{#crossLink "PIXI/scaleModes:property"}}scaleModes{{/crossLink}} for possible values
- * @return {Texture}
- */
-Texture.fromCanvas = function (canvas, scaleMode)
-{
-    return new Texture(BaseTexture.fromCanvas(canvas, scaleMode));
-};
-
-/**
- * Helper function that creates a new Texture based on the given video element.
- *
- * @static
- * @param video {HTMLVideoElement}
- * @param scaleMode {number} See {{#crossLink "PIXI/scaleModes:property"}}scaleModes{{/crossLink}} for possible values
- * @return {Texture} A Texture
- */
-Texture.fromVideo = function (video, scaleMode)
-{
-    return new Texture(VideoBaseTexture.baseTextureFromVideo(video, scaleMode));
-};
-
-/**
- * Adds a texture to the global utils.TextureCache. This cache is shared across the whole PIXI object.
- *
- * @static
- * @param texture {Texture} The Texture to add to the cache.
- * @param id {string} The id that the texture will be stored against.
- */
-Texture.addTextureToCache = function (texture, id)
-{
-    utils.TextureCache[id] = texture;
-};
-
-/**
- * Remove a texture from the global utils.TextureCache.
- *
- * @static
- * @param id {string} The id of the texture to be removed
- * @return {Texture} The texture that was removed
- */
-Texture.removeTextureFromCache = function (id)
-{
-    var texture = utils.TextureCache[id];
-
-    delete utils.TextureCache[id];
-    delete utils.BaseTextureCache[id];
-
-    return texture;
 };
 
 Texture.emptyTexture = new Texture(new BaseTexture());

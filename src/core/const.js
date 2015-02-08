@@ -11,7 +11,7 @@ module.exports = {
      * @constant
      * @property {string} VERSION
      */
-    VERSION: require('../../package.json').version,
+    VERSION: 'oetg',
 
     /**
      * Constant to identify the Renderer Type.

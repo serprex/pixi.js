@@ -48,7 +48,7 @@ var core = module.exports = {
 
     autoDetectRenderer: function (width, height, options)
     {
-        if (require('webgl-enabled')())
+        if (require('webgl-enabled')(options && options.view))
         {
             return new core.WebGLRenderer(width, height, options);
         }

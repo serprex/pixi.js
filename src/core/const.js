@@ -3,7 +3,7 @@
  *
  * @namespace PIXI.CONST
  */
-module.exports = {
+module.exports = Object.freeze({
     /**
      * String of the current PIXI version
      *
@@ -112,20 +112,14 @@ module.exports = {
      * @property {object} defaultRenderOptions
      * @property {HTMLCanvasElement} defaultRenderOptions.view=null
      * @property {boolean} defaultRenderOptions.transparent=false
-     * @property {boolean} defaultRenderOptions.antialias=false
      * @property {boolean} defaultRenderOptions.preserveDrawingBuffer=false
      * @property {number} defaultRenderOptions.resolution=1
-     * @property {number} defaultRenderOptions.backgroundColor=0x000000
      * @property {boolean} defaultRenderOptions.clearBeforeRender=true
-     * @property {boolean} defaultRenderOptions.autoResize=false
      */
     defaultRenderOptions: {
         view: null,
         resolution: 1,
-        antialias: false,
-        autoResize: false,
-        transparent: false,
-        backgroundColor: 0x000000,
+        transparent: true,
         clearBeforeRender: true,
         preserveDrawingBuffer: false
     },
@@ -145,10 +139,7 @@ module.exports = {
     SHAPES: {
         POLY: 0,
         RECT: 1,
-        CIRC: 2,
-        ELIP: 3,
-        RREC: 4
     },
 
     SPRITE_BATCH_SIZE: 2000 //nice balance between mobile and desktop machines
-};
+});

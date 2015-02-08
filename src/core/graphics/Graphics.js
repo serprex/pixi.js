@@ -588,70 +588,6 @@ Graphics.prototype.drawRect = function ( x, y, width, height )
 };
 
 /**
- *
- * @param x {number} The X coord of the top-left of the rectangle
- * @param y {number} The Y coord of the top-left of the rectangle
- * @param width {number} The width of the rectangle
- * @param height {number} The height of the rectangle
- * @param radius {number} Radius of the rectangle corners
- */
-Graphics.prototype.drawRoundedRect = function ( x, y, width, height, radius )
-{
-    this.drawShape(new math.RoundedRectangle(x, y, width, height, radius));
-
-    return this;
-};
-
-/**
- * Draws a circle.
- *
- * @param x {number} The X coordinate of the center of the circle
- * @param y {number} The Y coordinate of the center of the circle
- * @param radius {number} The radius of the circle
- * @return {Graphics}
- */
-Graphics.prototype.drawCircle = function (x, y, radius)
-{
-    this.drawShape(new math.Circle(x,y, radius));
-
-    return this;
-};
-
-/**
- * Draws an ellipse.
- *
- * @param x {number} The X coordinate of the center of the ellipse
- * @param y {number} The Y coordinate of the center of the ellipse
- * @param width {number} The half width of the ellipse
- * @param height {number} The half height of the ellipse
- * @return {Graphics}
- */
-Graphics.prototype.drawEllipse = function (x, y, width, height)
-{
-    this.drawShape(new math.Ellipse(x, y, width, height));
-
-    return this;
-};
-
-/**
- * Draws a polygon using the given path.
- *
- * @param path {Array} The path data used to construct the polygon.
- * @return {Graphics}
- */
-Graphics.prototype.drawPolygon = function (path)
-{
-    if (!(path instanceof Array))
-    {
-        path = Array.prototype.slice.call(arguments);
-    }
-
-    this.drawShape(new math.Polygon(path));
-
-    return this;
-};
-
-/**
  * Clears the graphics that were drawn to this Graphics object, and resets fill and line style settings.
  *
  * @return {Graphics}
@@ -663,7 +599,7 @@ Graphics.prototype.clear = function ()
 
     this.dirty = true;
     this.clearDirty = true;
-    this.graphicsData = [];
+    this.graphicsData.length = 0;
 
     return this;
 };

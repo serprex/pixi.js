@@ -55,14 +55,6 @@ function EventData(target, name, data)
      * @readonly
      */
     this.data = data;
-
-    /**
-     * The timestamp when the event occurred.
-     *
-     * @member {number}
-     * @readonly
-     */
-    this.timeStamp = Date.now();
 }
 
 EventData.prototype.constructor = EventData;

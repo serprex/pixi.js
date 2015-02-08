@@ -21,9 +21,6 @@ var SystemRenderer = require('../SystemRenderer'),
  * @param [height=0] {number} the height of the canvas view
  * @param [options] {object} The optional renderer parameters
  * @param [options.view] {HTMLCanvasElement} the canvas to use as a view, optional
- * @param [options.transparent=false] {boolean} If the render view is transparent, default false
- * @param [options.autoResize=false] {boolean} If the render view is automatically resized, default false
- * @param [options.antialias=false] {boolean} sets antialias (only applicable in chrome at the moment)
  * @param [options.resolution=1] {number} the resolution of the renderer retina would be 2
  * @param [options.clearBeforeRender=true] {boolean} This sets if the CanvasRenderer will clear the canvas or
  *      not before the new render pass.
@@ -54,9 +51,8 @@ function WebGLRenderer(width, height, options)
      * @private
      */
     this._contextOptions = {
-        alpha: this.transparent,
-        antialias: options.antialias,
-        premultipliedAlpha: this.transparent && this.transparent !== 'notMultiplied',
+        alpha: true,
+        premultipliedAlpha: false,
         stencil: true,
         preserveDrawingBuffer: options.preserveDrawingBuffer
     };
@@ -187,15 +183,7 @@ WebGLRenderer.prototype.render = function (object)
 
     if (this.clearBeforeRender)
     {
-        if (this.transparent)
-        {
-            gl.clearColor(0, 0, 0, 0);
-        }
-        else
-        {
-            gl.clearColor(this._backgroundColorRgb[0], this._backgroundColorRgb[1], this._backgroundColorRgb[2], 1);
-        }
-
+		gl.clearColor(0, 0, 0, 0);
         gl.clear(gl.COLOR_BUFFER_BIT);
     }
 

@@ -190,11 +190,9 @@ GraphicsRenderer.prototype.updateGraphics = function(graphics)
                         webGLData = this.switchMode(webGL, 0);
 
                         var canDrawUsingSimple = this.buildPoly(data, webGLData);
-                   //     console.log(canDrawUsingSimple);
 
                         if (!canDrawUsingSimple)
                         {
-                        //    console.log("<>>>")
                             webGLData = this.switchMode(webGL, 1);
                             this.buildComplexPoly(data, webGLData);
                         }
@@ -221,14 +219,6 @@ GraphicsRenderer.prototype.updateGraphics = function(graphics)
             if (data.type === CONST.SHAPES.RECT)
             {
                 this.buildRectangle(data, webGLData);
-            }
-            else if (data.type === CONST.SHAPES.CIRC || data.type === CONST.SHAPES.ELIP)
-            {
-                this.buildCircle(data, webGLData);
-            }
-            else if (data.type === CONST.SHAPES.RREC)
-            {
-                this.buildRoundedRectangle(data, webGLData);
             }
         }
 
@@ -348,77 +338,6 @@ GraphicsRenderer.prototype.buildRectangle = function (graphicsData, webGLData)
 };
 
 /**
- * Builds a rounded rectangle to draw
- *
- * @private
- * @param graphicsData {Graphics} The graphics object containing all the necessary properties
- * @param webGLData {object}
- */
-GraphicsRenderer.prototype.buildRoundedRectangle = function (graphicsData, webGLData)
-{
-    var rrectData = graphicsData.shape;
-    var x = rrectData.x;
-    var y = rrectData.y;
-    var width = rrectData.width;
-    var height = rrectData.height;
-
-    var radius = rrectData.radius;
-
-    var recPoints = [];
-    recPoints.push(x, y + radius);
-    recPoints = recPoints.concat(this.quadraticBezierCurve(x, y + height - radius, x, y + height, x + radius, y + height));
-    recPoints = recPoints.concat(this.quadraticBezierCurve(x + width - radius, y + height, x + width, y + height, x + width, y + height - radius));
-    recPoints = recPoints.concat(this.quadraticBezierCurve(x + width, y + radius, x + width, y, x + width - radius, y));
-    recPoints = recPoints.concat(this.quadraticBezierCurve(x + radius, y, x, y, x, y + radius));
-
-    if (graphicsData.fill)
-    {
-        var color = utils.hex2rgb(graphicsData.fillColor);
-        var alpha = graphicsData.fillAlpha;
-
-        var r = color[0] * alpha;
-        var g = color[1] * alpha;
-        var b = color[2] * alpha;
-
-        var verts = webGLData.points;
-        var indices = webGLData.indices;
-
-        var vecPos = verts.length/6;
-
-        //TODO use this https://github.com/mapbox/earcut
-        var triangles = utils.PolyK.Triangulate(recPoints);
-
-        //
-
-        var i = 0;
-        for (i = 0; i < triangles.length; i+=3)
-        {
-            indices.push(triangles[i] + vecPos);
-            indices.push(triangles[i] + vecPos);
-            indices.push(triangles[i+1] + vecPos);
-            indices.push(triangles[i+2] + vecPos);
-            indices.push(triangles[i+2] + vecPos);
-        }
-
-        for (i = 0; i < recPoints.length; i++)
-        {
-            verts.push(recPoints[i], recPoints[++i], r, g, b, alpha);
-        }
-    }
-
-    if (graphicsData.lineWidth)
-    {
-        var tempPoints = graphicsData.points;
-
-        graphicsData.points = recPoints;
-
-        this.buildLine(graphicsData, webGLData);
-
-        graphicsData.points = tempPoints;
-    }
-};
-
-/**
  * Calculate the points for a quadratic bezier curve. (helper function..)
  * Based on: https://stackoverflow.com/questions/785097/how-do-i-implement-a-bezier-curve-in-c
  *
@@ -434,12 +353,9 @@ GraphicsRenderer.prototype.buildRoundedRectangle = function (graphicsData, webGL
 GraphicsRenderer.prototype.quadraticBezierCurve = function (fromX, fromY, cpX, cpY, toX, toY)
 {
 
-    var xa,
-        ya,
-        xb,
-        yb,
-        x,
-        y,
+    var xa, ya,
+        xb, yb,
+        x, y,
         n = 20,
         points = [];
 
@@ -466,87 +382,6 @@ GraphicsRenderer.prototype.quadraticBezierCurve = function (fromX, fromY, cpX, c
         points.push(x, y);
     }
     return points;
-};
-
-/**
- * Builds a circle to draw
- *
- * @private
- * @param graphicsData {Graphics} The graphics object to draw
- * @param webGLData {object}
- */
-GraphicsRenderer.prototype.buildCircle = function (graphicsData, webGLData)
-{
-    // need to convert points to a nice regular data
-    var circleData = graphicsData.shape;
-    var x = circleData.x;
-    var y = circleData.y;
-    var width;
-    var height;
-
-    // TODO - bit hacky??
-    if (graphicsData.type === CONST.SHAPES.CIRC)
-    {
-        width = circleData.radius;
-        height = circleData.radius;
-    }
-    else
-    {
-        width = circleData.width;
-        height = circleData.height;
-    }
-
-    var totalSegs = 40;
-    var seg = (Math.PI * 2) / totalSegs ;
-
-    var i = 0;
-
-    if (graphicsData.fill)
-    {
-        var color = utils.hex2rgb(graphicsData.fillColor);
-        var alpha = graphicsData.fillAlpha;
-
-        var r = color[0] * alpha;
-        var g = color[1] * alpha;
-        var b = color[2] * alpha;
-
-        var verts = webGLData.points;
-        var indices = webGLData.indices;
-
-        var vecPos = verts.length/6;
-
-        indices.push(vecPos);
-
-        for (i = 0; i < totalSegs + 1 ; i++)
-        {
-            verts.push(x,y, r, g, b, alpha);
-
-            verts.push(x + Math.sin(seg * i) * width,
-                       y + Math.cos(seg * i) * height,
-                       r, g, b, alpha);
-
-            indices.push(vecPos++, vecPos++);
-        }
-
-        indices.push(vecPos-1);
-    }
-
-    if (graphicsData.lineWidth)
-    {
-        var tempPoints = graphicsData.points;
-
-        graphicsData.points = [];
-
-        for (i = 0; i < totalSegs + 1; i++)
-        {
-            graphicsData.points.push(x + Math.sin(seg * i) * width,
-                                     y + Math.cos(seg * i) * height);
-        }
-
-        this.buildLine(graphicsData, webGLData);
-
-        graphicsData.points = tempPoints;
-    }
 };
 
 /**

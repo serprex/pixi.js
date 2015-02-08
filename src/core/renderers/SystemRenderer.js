@@ -14,7 +14,6 @@ var utils = require('../utils'),
  * @param [options] {object} The optional renderer parameters
  * @param [options.view] {HTMLCanvasElement} the canvas to use as a view, optional
  * @param [options.transparent=false] {boolean} If the render view is transparent, default false
- * @param [options.autoResize=false] {boolean} If the render view is automatically resized, default false
  * @param [options.antialias=false] {boolean} sets antialias (only applicable in chrome at the moment)
  * @param [options.resolution=1] {number} the resolution of the renderer retina would be 2
  * @param [options.clearBeforeRender=true] {boolean} This sets if the CanvasRenderer will clear the canvas or
@@ -87,13 +86,6 @@ function SystemRenderer(system, width, height, options)
     this.transparent = options.transparent;
 
     /**
-     * Whether the render view should be resized automatically
-     *
-     * @member {boolean}
-     */
-    this.autoResize = options.autoResize || false;
-
-    /**
      * Tracks the blend modes useful for this renderer.
      *
      * @member {object<string, mixed>}
@@ -121,37 +113,6 @@ function SystemRenderer(system, width, height, options)
      * @default
      */
     this.clearBeforeRender = options.clearBeforeRender;
-
-
-    ////////////////////////
-
-    /**
-     * The background color as a number.
-     *
-     * @member {number}
-     * @private
-     */
-    this._backgroundColor = 0xFFFFFF;
-
-    /**
-     * The background color as an [R, G, B] array.
-     *
-     * @member {number[]}
-     * @private
-     */
-    this._backgroundColorRgb = [1, 1, 1];
-
-    /**
-     * The background color as a string.
-     *
-     * @member {string}
-     * @private
-     */
-    this._backgroundColorString = '#000000';
-
-    this.backgroundColor = options.backgroundColor || this._backgroundColor; // run bg color setter
-
-
 
     /**
      * This temporary display object used as the parent of the currently being rendered item
@@ -204,12 +165,6 @@ SystemRenderer.prototype.resize = function (width, height) {
 
     this.view.width = this.width;
     this.view.height = this.height;
-
-    if (this.autoResize)
-    {
-        this.view.style.width = this.width / this.resolution + 'px';
-        this.view.style.height = this.height / this.resolution + 'px';
-    }
 };
 
 /**
@@ -233,8 +188,6 @@ SystemRenderer.prototype.destroy = function (removeView) {
     this.resolution = 0;
 
     this.transparent = false;
-
-    this.autoResize = false;
 
     this.blendModes = null;
 

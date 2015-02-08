@@ -37,7 +37,6 @@ Point.prototype.clone = function ()
 
 /**
  * Sets the point to a new x and y position.
- * If y is omitted, both x and y will be set to x.
  *
  * @param [x=0] {number} position of the point on the x axis
  * @param [y=0] {number} position of the point on the y axis
@@ -45,5 +44,5 @@ Point.prototype.clone = function ()
 Point.prototype.set = function (x, y)
 {
     this.x = x || 0;
-    this.y = y || ( (y !== 0) ? this.x : 0 ) ;
+    this.y = y || 0;
 };

@@ -17,8 +17,6 @@ var math = require('../../../math'),
 */
 var RenderTarget = function(gl, width, height, scaleMode, root, createStencilBuffer)
 {
-    //TODO Resolution could go here ( eg low res blurs )
-
     /**
      * @property gl
      * @type WebGLContext
@@ -40,8 +38,6 @@ var RenderTarget = function(gl, width, height, scaleMode, root, createStencilBuf
     this.texture = null;
 
     this.size = new math.Rectangle(0, 0, 1, 1);
-
-    this.resolution = 1;
 
     this.projectionMatrix = new math.Matrix();
 

@@ -135,9 +135,6 @@ function DisplayObject()
      */
     this._mask = null;
 
-    //TODO rename to _isMask
-    this.isMask = false;
-
     /**
      * Cached internal flag.
      *
@@ -230,14 +227,14 @@ Object.defineProperties(DisplayObject.prototype, {
         {
             if (this._mask)
             {
-                this._mask.isMask = false;
+                this._mask.renderable = true;
             }
 
             this._mask = value;
 
             if (this._mask)
             {
-                this._mask.isMask = true;
+                this._mask.renderable = false;
             }
         }
     },
@@ -416,11 +413,11 @@ DisplayObject.prototype.renderCanvas = function (/* renderer */)
     // OVERWRITE;
 };
 
-DisplayObject.prototype.generateTexture = function (renderer, resolution, scaleMode)
+DisplayObject.prototype.generateTexture = function (renderer, scaleMode)
 {
     var bounds = this.getLocalBounds();
 
-    var renderTexture = new RenderTexture(renderer, bounds.width | 0, bounds.height | 0, renderer, scaleMode, resolution);
+    var renderTexture = new RenderTexture(renderer, bounds.width | 0, bounds.height | 0, renderer, scaleMode);
 
     _tempMatrix.tx = -bounds.x;
     _tempMatrix.ty = -bounds.y;

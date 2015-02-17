@@ -44,9 +44,8 @@ var BaseTexture = require('./BaseTexture'),
  * @param [width=100] {number} The width of the render texture
  * @param [height=100] {number} The height of the render texture
  * @param [scaleMode] {number} See {@link scaleModes} for possible values
- * @param [resolution=1] {number} The resolution of the texture being generated
  */
-function RenderTexture(renderer, width, height, scaleMode, resolution)
+function RenderTexture(renderer, width, height, scaleMode)
 {
     if (!renderer)
     {
@@ -55,7 +54,6 @@ function RenderTexture(renderer, width, height, scaleMode, resolution)
 
     width = width || 100;
     height = height || 100;
-    resolution = resolution || 1;
 
     /**
      * The base texture object that this texture uses
@@ -63,9 +61,8 @@ function RenderTexture(renderer, width, height, scaleMode, resolution)
      * @member {BaseTexture}
      */
     var baseTexture = new BaseTexture();
-    baseTexture.width = width * resolution;
-    baseTexture.height = height * resolution;
-    baseTexture.resolution = resolution;
+    baseTexture.width = width;
+    baseTexture.height = height;
     baseTexture.scaleMode = scaleMode || CONST.scaleModes.DEFAULT;
     baseTexture.hasLoaded = true;
 
@@ -91,18 +88,11 @@ function RenderTexture(renderer, width, height, scaleMode, resolution)
     this.height = height;
 
     /**
-     * The Resolution of the texture.
-     *
-     * @member {number}
-     */
-    this.resolution = resolution;
-
-    /**
      * The framing rectangle of the render texture
      *
      * @member {Rectangle}
      */
-    //this._frame = new math.Rectangle(0, 0, this.width * this.resolution, this.height * this.resolution);
+    //this._frame = new math.Rectangle(0, 0, this.width, this.height);
 
     /**
      * This is the area of the BaseTexture image to actually copy to the Canvas / WebGL when rendering,
@@ -110,7 +100,7 @@ function RenderTexture(renderer, width, height, scaleMode, resolution)
      *
      * @member {Rectangle}
      */
-    //this.crop = new math.Rectangle(0, 0, this.width * this.resolution, this.height * this.resolution);
+    //this.crop = new math.Rectangle(0, 0, this.width, this.height);
 
     /**
      * Draw/render the given DisplayObject onto the texture.
@@ -142,7 +132,7 @@ function RenderTexture(renderer, width, height, scaleMode, resolution)
     {
         var gl = this.renderer.gl;
 
-        this.textureBuffer = new RenderTarget(gl, this.width * this.resolution, this.height * this.resolution);//, this.baseTexture.scaleMode);
+        this.textureBuffer = new RenderTarget(gl, this.width, this.height);//, this.baseTexture.scaleMode);
         this.baseTexture._glTextures[gl.id] =  this.textureBuffer.texture;
 
         this.render = this.renderWebGL;
@@ -152,7 +142,7 @@ function RenderTexture(renderer, width, height, scaleMode, resolution)
     {
 
         this.render = this.renderCanvas;
-        this.textureBuffer = new CanvasBuffer(this.width* this.resolution, this.height* this.resolution);
+        this.textureBuffer = new CanvasBuffer(this.width, this.height);
         this.baseTexture.source = this.textureBuffer.canvas;
     }
 
@@ -204,7 +194,7 @@ RenderTexture.prototype.resize = function (width, height, updateBase)
         return;
     }
 
-    this.textureBuffer.resize(this.width * this.resolution, this.height * this.resolution);
+    this.textureBuffer.resize(this.width, this.height);
 };
 
 /**
@@ -287,7 +277,7 @@ RenderTexture.prototype.renderWebGL = function (displayObject, matrix, clear, re
     // time for the webGL fun stuff!
     var gl = this.renderer.gl;
 
-    gl.viewport(0, 0, this.width * this.resolution, this.height * this.resolution);
+    gl.viewport(0, 0, this.width, this.height);
 
     gl.bindFramebuffer(gl.FRAMEBUFFER, this.textureBuffer.frameBuffer );
 
@@ -356,19 +346,7 @@ RenderTexture.prototype.renderCanvas = function (displayObject, matrix, clear)
         this.textureBuffer.clear();
     }
 
-//    this.textureBuffer.
-    var context = this.textureBuffer.context;
-
-    var realResolution = this.renderer.resolution;
-
-    this.renderer.resolution = this.resolution;
-
-    this.renderer.renderDisplayObject(displayObject, context);
-
-    this.renderer.resolution = realResolution;
- //   context.setTransform(1, 0, 0, 1, 0, 0);
-   // context.fillStyle ="#FF0000"
-//    context.fillRect(0, 0, 800, 600);
+    this.renderer.renderDisplayObject(displayObject, this.textureBuffer.context);
 
 };
 

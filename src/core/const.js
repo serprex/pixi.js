@@ -95,15 +95,6 @@ module.exports = Object.freeze({
     },
 
     /**
-     * The prefix that denotes a URL is for a retina asset
-     *
-     * @static
-     * @constant
-     * @property {string} RETINA_PREFIX
-     */
-    RETINA_PREFIX: '@2x',
-
-    /**
      * The default render options if none are supplied to {@link PIXI.WebGLRenderer}
      * or {@link PIXI.CanvasRenderer}.
      *
@@ -113,12 +104,10 @@ module.exports = Object.freeze({
      * @property {HTMLCanvasElement} defaultRenderOptions.view=null
      * @property {boolean} defaultRenderOptions.transparent=false
      * @property {boolean} defaultRenderOptions.preserveDrawingBuffer=false
-     * @property {number} defaultRenderOptions.resolution=1
      * @property {boolean} defaultRenderOptions.clearBeforeRender=true
      */
     defaultRenderOptions: {
         view: null,
-        resolution: 1,
         transparent: true,
         clearBeforeRender: true,
         preserveDrawingBuffer: false

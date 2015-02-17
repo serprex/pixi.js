@@ -324,8 +324,6 @@ Sprite.prototype.renderCanvas = function (renderer)
     //  Ignore null sources
     if (this.texture.valid)
     {
-        var resolution = this.texture.baseTexture.resolution / renderer.resolution;
-
         renderer.context.globalAlpha = this.worldAlpha;
 
         // If smoothingEnabled is supported and we need to change the smoothing property for this texture
@@ -348,8 +346,8 @@ Sprite.prototype.renderCanvas = function (renderer)
                 this.worldTransform.b,
                 this.worldTransform.c,
                 this.worldTransform.d,
-                (this.worldTransform.tx * renderer.resolution) | 0,
-                (this.worldTransform.ty * renderer.resolution) | 0
+                this.worldTransform.tx | 0,
+                this.worldTransform.ty | 0
             );
 
             dx = dx | 0;
@@ -362,8 +360,8 @@ Sprite.prototype.renderCanvas = function (renderer)
                 this.worldTransform.b,
                 this.worldTransform.c,
                 this.worldTransform.d,
-                this.worldTransform.tx * renderer.resolution,
-                this.worldTransform.ty * renderer.resolution
+                this.worldTransform.tx,
+                this.worldTransform.ty
             );
         }
 
@@ -379,28 +377,20 @@ Sprite.prototype.renderCanvas = function (renderer)
 
             renderer.context.drawImage(
                 this.tintedTexture,
-                0,
-                0,
-                this.texture.crop.width,
-                this.texture.crop.height,
-                dx / resolution,
-                dy / resolution,
-                this.texture.crop.width / resolution,
-                this.texture.crop.height / resolution
+                0, 0,
+                this.texture.crop.width, this.texture.crop.height,
+                dx, dy,
+                this.texture.crop.width, this.texture.crop.height
             );
         }
         else
         {
             renderer.context.drawImage(
                 this.texture.baseTexture.source,
-                this.texture.crop.x,
-                this.texture.crop.y,
-                this.texture.crop.width,
-                this.texture.crop.height,
-                dx / resolution,
-                dy / resolution,
-                this.texture.crop.width / resolution,
-                this.texture.crop.height / resolution
+                this.texture.crop.x, this.texture.crop.y,
+                this.texture.crop.width, this.texture.crop.height,
+                dx, dy,
+                this.texture.crop.width, this.texture.crop.height
             );
         }
     }

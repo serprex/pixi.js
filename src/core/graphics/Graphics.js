@@ -86,13 +86,6 @@ function Graphics()
     this._webGL = {};
 
     /**
-     * Whether this shape is being used as a mask.
-     *
-     * @member {boolean}
-     */
-    this.isMask = false;
-
-    /**
      * The bounds' padding used for bounds calculation.
      *
      * @member {number}
@@ -189,7 +182,6 @@ GraphicsData.prototype.clone = function ()
     clone.lineColor     = this.lineColor;
     clone.tint          = this.tint;
     clone.blendMode     = this.blendMode;
-    clone.isMask        = this.isMask;
     clone.boundsPadding = this.boundsPadding;
     clone.dirty         = this.dirty;
     clone.glDirty       = this.glDirty;
@@ -608,22 +600,16 @@ Graphics.prototype.clear = function ()
  * Useful function that returns a texture of the graphics object that can then be used to create sprites
  * This can be quite useful if your geometry is complicated and needs to be reused multiple times.
  *
- * @param resolution {number} The resolution of the texture being generated
  * @param scaleMode {number} Should be one of the scaleMode consts
  * @return {Texture} a texture of the graphics object
  */
-Graphics.prototype.generateTexture = function (resolution, scaleMode)
+Graphics.prototype.generateTexture = function (scaleMode)
 {
-    resolution = resolution || 1;
-
     var bounds = this.getBounds();
 
-    var canvasBuffer = new CanvasBuffer(bounds.width * resolution, bounds.height * resolution);
+    var canvasBuffer = new CanvasBuffer(bounds.width, bounds.height);
 
     var texture = Texture.fromCanvas(canvasBuffer.canvas, scaleMode);
-    texture.baseTexture.resolution = resolution;
-
-    canvasBuffer.context.scale(resolution, resolution);
 
     canvasBuffer.context.translate(-bounds.x,-bounds.y);
 
@@ -640,35 +626,10 @@ Graphics.prototype.generateTexture = function (resolution, scaleMode)
 Graphics.prototype._renderWebGL = function (renderer)
 {
     // if the sprite is not visible or the alpha is 0 then no need to render this element
-    if (this.isMask === true)
+    if (!this.renderable)
     {
         return;
     }
-
-    // this code may still be needed so leaving for now..
-    //
-    /*
-    if (this._cacheAsBitmap)
-    {
-        if (this.dirty || this.cachedSpriteDirty)
-        {
-            this._generateCachedSprite();
-
-            // we will also need to update the texture on the gpu too!
-            this.updateCachedSpriteTexture();
-
-            this.cachedSpriteDirty = false;
-            this.dirty = false;
-        }
-
-        this._cachedSprite.worldAlpha = this.worldAlpha;
-
-        Sprite.prototype.renderWebGL.call(this._cachedSprite, renderer);
-
-        return;
-    }
-
-    */
 
     if (this.glDirty)
     {
@@ -690,7 +651,7 @@ Graphics.prototype._renderWebGL = function (renderer)
 Graphics.prototype.renderCanvas = function (renderer)
 {
     // if the sprite is not visible or the alpha is 0 then no need to render this element
-    if (!this.visible || this.alpha <= 0 || this.isMask === true  || !this.renderable)
+    if (!this.visible || this.alpha <= 0 || !this.renderable)
     {
         return;
     }
@@ -730,14 +691,13 @@ Graphics.prototype.renderCanvas = function (renderer)
             renderer.maskManager.pushMask(this._mask, renderer);
         }
 
-        var resolution = renderer.resolution;
         context.setTransform(
-            transform.a * resolution,
-            transform.b * resolution,
-            transform.c * resolution,
-            transform.d * resolution,
-            transform.tx * resolution,
-            transform.ty * resolution
+            transform.a,
+            transform.b,
+            transform.c,
+            transform.d,
+            transform.tx,
+            transform.ty
         );
 
         CanvasGraphics.renderGraphics(this, context);
@@ -762,7 +722,7 @@ Graphics.prototype.renderCanvas = function (renderer)
 Graphics.prototype.getBounds = function (matrix)
 {
     // return an empty object if the item is a mask!
-    if (this.isMask)
+    if (!this.renderable)
     {
         return math.Rectangle.EMPTY;
     }

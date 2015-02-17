@@ -21,7 +21,6 @@ var SystemRenderer = require('../SystemRenderer'),
  * @param [height=0] {number} the height of the canvas view
  * @param [options] {object} The optional renderer parameters
  * @param [options.view] {HTMLCanvasElement} the canvas to use as a view, optional
- * @param [options.resolution=1] {number} the resolution of the renderer retina would be 2
  * @param [options.clearBeforeRender=true] {boolean} This sets if the CanvasRenderer will clear the canvas or
  *      not before the new render pass.
  * @param [options.preserveDrawingBuffer=false] {boolean} enables drawing buffer preservation, enable this if

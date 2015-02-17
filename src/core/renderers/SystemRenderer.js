@@ -15,7 +15,6 @@ var utils = require('../utils'),
  * @param [options.view] {HTMLCanvasElement} the canvas to use as a view, optional
  * @param [options.transparent=false] {boolean} If the render view is transparent, default false
  * @param [options.antialias=false] {boolean} sets antialias (only applicable in chrome at the moment)
- * @param [options.resolution=1] {number} the resolution of the renderer retina would be 2
  * @param [options.clearBeforeRender=true] {boolean} This sets if the CanvasRenderer will clear the canvas or
  *      not before the new render pass.
  */
@@ -69,14 +68,6 @@ function SystemRenderer(system, width, height, options)
      * @member {HTMLCanvasElement}
      */
     this.view = options.view || document.createElement('canvas');
-
-    /**
-     * The resolution of the renderer
-     *
-     * @member {number}
-     * @default 1
-     */
-    this.resolution = options.resolution;
 
     /**
      * Whether the render view is transparent
@@ -160,8 +151,8 @@ Object.defineProperties(SystemRenderer.prototype, {
  * @param height {number} the new height of the canvas view
  */
 SystemRenderer.prototype.resize = function (width, height) {
-    this.width = width * this.resolution;
-    this.height = height * this.resolution;
+    this.width = width;
+    this.height = height;
 
     this.view.width = this.width;
     this.view.height = this.height;
@@ -184,8 +175,6 @@ SystemRenderer.prototype.destroy = function (removeView) {
     this.height = 0;
 
     this.view = null;
-
-    this.resolution = 0;
 
     this.transparent = false;
 

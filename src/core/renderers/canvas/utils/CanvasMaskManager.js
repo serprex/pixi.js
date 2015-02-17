@@ -24,15 +24,14 @@ CanvasMaskManager.prototype.pushMask = function (maskData, renderer)
 
     var cacheAlpha = maskData.alpha;
     var transform = maskData.worldTransform;
-    var resolution = renderer.resolution;
 
     renderer.context.setTransform(
-        transform.a * resolution,
-        transform.b * resolution,
-        transform.c * resolution,
-        transform.d * resolution,
-        transform.tx * resolution,
-        transform.ty * resolution
+        transform.a,
+        transform.b,
+        transform.c,
+        transform.d,
+        transform.tx,
+        transform.ty
     );
 
     CanvasGraphics.renderGraphicsMask(maskData, renderer.context);

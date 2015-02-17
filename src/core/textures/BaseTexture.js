@@ -15,13 +15,6 @@ function BaseTexture(source, scaleMode)
     this.uuid = utils.uuid();
 
     /**
-     * The Resolution of the texture.
-     *
-     * @member {number}
-     */
-    this.resolution = 1;
-
-    /**
      * The width of the base texture set when the image has loaded
      *
      * @member {number}

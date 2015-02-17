@@ -128,9 +128,10 @@ Matrix.prototype.toArray = function (transpose)
 Matrix.prototype.apply = function (pos, newPos)
 {
     newPos = newPos || new Point();
+	var x = pos.x, y = pos.y;
 
-    newPos.x = this.a * pos.x + this.c * pos.y + this.tx;
-    newPos.y = this.b * pos.x + this.d * pos.y + this.ty;
+    newPos.x = this.a * x + this.c * y + this.tx;
+    newPos.y = this.b * x + this.d * y + this.ty;
 
     return newPos;
 };
@@ -146,11 +147,11 @@ Matrix.prototype.apply = function (pos, newPos)
 Matrix.prototype.applyInverse = function (pos, newPos)
 {
     newPos = newPos || new Point();
-
+	var x = pos.x, y = pos.y;
     var id = 1 / (this.a * this.d + this.c * -this.b);
 
-    newPos.x = this.d * id * pos.x + -this.c * id * pos.y + (this.ty * this.c - this.tx * this.d) * id;
-    newPos.y = this.a * id * pos.y + -this.b * id * pos.x + (-this.ty * this.a + this.tx * this.b) * id;
+    newPos.x = this.d * id * x + -this.c * id * y + (this.ty * this.c - this.tx * this.d) * id;
+    newPos.y = this.a * id * y + -this.b * id * x + (-this.ty * this.a + this.tx * this.b) * id;
 
     return newPos;
 };

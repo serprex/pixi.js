@@ -34,11 +34,10 @@ function eventTarget(obj)
     /**
      * Emit an event to all registered event listeners.
      *
-     * @alias dispatchEvent
      * @param eventName {string} The name of the event.
      * @return {boolean} Indication if we've emitted an event.
      */
-    obj.emit = obj.dispatchEvent = function emit(eventName, data)
+    obj.emit = function emit(eventName, data)
     {
         this._listeners = this._listeners || {};
 
@@ -62,7 +61,7 @@ function eventTarget(obj)
         //instead of creating a new object lets use an the temp one ( save new creation for each event )
         if ( !data || !data.__isEventObject )
         {
-            tempEventObject.target=  this;
+            tempEventObject.target = this;
             tempEventObject.type = eventName;
             tempEventObject.data = data;
 
@@ -100,11 +99,10 @@ function eventTarget(obj)
     /**
      * Register a new EventListener for the given event.
      *
-     * @alias addEventListener
      * @param eventName {string} Name of the event.
      * @param callback {Functon} fn Callback function.
      */
-    obj.on = obj.addEventListener = function on(eventName, fn)
+    obj.on = function on(eventName, fn)
     {
         this._listeners = this._listeners || {};
 
@@ -137,11 +135,10 @@ function eventTarget(obj)
     /**
      * Remove event listeners.
      *
-     * @alias removeEventListener
      * @param eventName {string} The event we want to remove.
      * @param callback {Function} The listener that we need to find.
      */
-    obj.off = obj.removeEventListener = function off(eventName, fn)
+    obj.off = function off(eventName, fn)
     {
         this._listeners = this._listeners || {};
 

@@ -121,7 +121,7 @@ function Texture(baseTexture, frame, crop, trim)
     }
     else
     {
-        baseTexture.addEventListener('loaded', this.onBaseTextureLoaded.bind(this));
+        baseTexture.on('loaded', this.onBaseTextureLoaded.bind(this));
     }
 }
 
@@ -198,7 +198,7 @@ Texture.prototype.update = function ()
 Texture.prototype.onBaseTextureLoaded = function ()
 {
     var baseTexture = this.baseTexture;
-    baseTexture.removeEventListener('loaded', this.onLoaded);
+    baseTexture.off('loaded', this.onLoaded);
 
     // TODO this code looks confusing.. boo to abusing getters and setterss!
     if (this.noFrame)
@@ -210,7 +210,7 @@ Texture.prototype.onBaseTextureLoaded = function ()
         this.frame = this._frame;
     }
 
-    this.dispatchEvent( { type: 'update', content: this } );
+    this.emit('update', this);
 };
 
 /**

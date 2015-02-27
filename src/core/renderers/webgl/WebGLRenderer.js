@@ -232,6 +232,10 @@ WebGLRenderer.prototype.setObjectRenderer = function (objectRenderer)
 
 WebGLRenderer.prototype.setRenderTarget = function (renderTarget)
 {
+    if (this.currentRenderTarget === renderTarget)
+    {
+        return;
+    }
     this.currentRenderTarget = renderTarget;
     this.currentRenderTarget.activate();
     this.stencilManager.setMaskStack( renderTarget.stencilMaskStack );

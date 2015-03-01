@@ -367,7 +367,7 @@ DisplayObject.prototype.getLocalBounds = function ()
  */
 DisplayObject.prototype.toGlobal = function (position)
 {
-    // don't need to u[date the lot
+    // don't need to update the lot
     this.displayObjectUpdateTransform();
     return this.worldTransform.apply(position);
 };

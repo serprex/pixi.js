@@ -136,8 +136,6 @@ WebGLRenderer.prototype._initContext = function ()
     gl.disable(gl.DEPTH_TEST);
     gl.disable(gl.CULL_FACE);
     gl.enable(gl.BLEND);
-	gl.clearColor(0, 0, 0, 0);
-
 
     this.renderTarget = new RenderTarget(this.gl, this.width, this.height, null, true);
 
@@ -160,8 +158,6 @@ WebGLRenderer.prototype.render = function (object)
     {
         return;
     }
-
-    this._lastObjectRendered = object;
 
     var cacheParent = object.parent;
     object.parent = this._tempDisplayObjectParent;

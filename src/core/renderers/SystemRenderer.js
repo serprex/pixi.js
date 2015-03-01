@@ -13,8 +13,6 @@ var utils = require('../utils'),
  * @param [height=600] {number} the height of the canvas view
  * @param [options] {object} The optional renderer parameters
  * @param [options.view] {HTMLCanvasElement} the canvas to use as a view, optional
- * @param [options.transparent=false] {boolean} If the render view is transparent, default false
- * @param [options.antialias=false] {boolean} sets antialias (only applicable in chrome at the moment)
  * @param [options.clearBeforeRender=true] {boolean} This sets if the CanvasRenderer will clear the canvas or
  *      not before the new render pass.
  */
@@ -70,13 +68,6 @@ function SystemRenderer(system, width, height, options)
     this.view = options.view || document.createElement('canvas');
 
     /**
-     * Whether the render view is transparent
-     *
-     * @member {boolean}
-     */
-    this.transparent = options.transparent;
-
-    /**
      * Tracks the blend modes useful for this renderer.
      *
      * @member {object<string, mixed>}
@@ -96,8 +87,6 @@ function SystemRenderer(system, width, height, options)
 
     /**
      * This sets if the CanvasRenderer will clear the canvas or not before the new render pass.
-     * If the scene is NOT transparent Pixi will use a canvas sized fillRect operation every frame to set the canvas background color.
-     * If the scene is transparent Pixi will use clearRect to clear the canvas every frame.
      * Disable this by setting this to false. For example if your game has a canvas filling background image you often don't need this set.
      *
      * @member {boolean}
@@ -111,9 +100,6 @@ function SystemRenderer(system, width, height, options)
      * @private
      */
     this._tempDisplayObjectParent = {worldTransform:new math.Matrix(), worldAlpha:1, children:[]};
-
-    //
-    this._lastObjectRendered = this._tempDisplayObjectParent;
 }
 
 // constructor
@@ -121,28 +107,6 @@ SystemRenderer.prototype.constructor = SystemRenderer;
 module.exports = SystemRenderer;
 
 utils.eventTarget.mixin(SystemRenderer.prototype);
-
-Object.defineProperties(SystemRenderer.prototype, {
-    /**
-     * The background color to fill if not transparent
-     *
-     * @member {number}
-     * @memberof SystemRenderer#
-     */
-    backgroundColor:
-    {
-        get: function ()
-        {
-            return this._backgroundColor;
-        },
-        set: function (val)
-        {
-            this._backgroundColor = val;
-            this._backgroundColorString = utils.hex2string(val);
-            utils.hex2rgb(val, this._backgroundColorRgb);
-        }
-    }
-});
 
 /**
  * Resizes the canvas view to the specified width and height
@@ -176,14 +140,8 @@ SystemRenderer.prototype.destroy = function (removeView) {
 
     this.view = null;
 
-    this.transparent = false;
-
     this.blendModes = null;
 
     this.preserveDrawingBuffer = false;
     this.clearBeforeRender = false;
-
-    this._backgroundColor = 0;
-    this._backgroundColorRgb = null;
-    this._backgroundColorString = null;
 };

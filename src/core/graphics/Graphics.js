@@ -1,5 +1,4 @@
 var Container = require('../display/Container'),
-    Sprite = require('../sprites/Sprite'),
     Texture = require('../textures/Texture'),
     CanvasBuffer = require('../renderers/canvas/utils/CanvasBuffer'),
     CanvasGraphics = require('../renderers/canvas/utils/CanvasGraphics'),
@@ -117,55 +116,12 @@ function Graphics()
      * @private
      */
     this.glDirty = false;
-
-    /**
-     * Used to detect if the cached sprite object needs to be updated.
-     *
-     * @member {boolean}
-     * @private
-     */
-    this.cachedSpriteDirty = false;
 }
 
 // constructor
 Graphics.prototype = Object.create(Container.prototype);
 Graphics.prototype.constructor = Graphics;
 module.exports = Graphics;
-
-Object.defineProperties(Graphics.prototype, {
-    /**
-     * When cacheAsBitmap is set to true the graphics object will be rendered as if it was a sprite.
-     * This is useful if your graphics element does not change often, as it will speed up the rendering
-     * of the object in exchange for taking up texture memory. It is also useful if you need the graphics
-     * object to be anti-aliased, because it will be rendered using canvas. This is not recommended if
-     * you are constantly redrawing the graphics element.
-     *
-     * @member {boolean}
-     * @memberof Graphics#
-     * @default false
-     * @private
-     */
-    cacheAsBitmap: {
-        get: function ()
-        {
-            return this._cacheAsBitmap;
-        },
-        set: function (value)
-        {
-            this._cacheAsBitmap = value;
-
-            if (this._cacheAsBitmap)
-            {
-                this._generateCachedSprite();
-            }
-            else
-            {
-                this.destroyCachedSprite();
-                this.dirty = true;
-            }
-        }
-    }
-});
 
 /**
  * Creates a new Graphics object with the same values as this one.
@@ -185,7 +141,6 @@ GraphicsData.prototype.clone = function ()
     clone.boundsPadding = this.boundsPadding;
     clone.dirty         = this.dirty;
     clone.glDirty       = this.glDirty;
-    clone.cachedSpriteDirty = this.cachedSpriteDirty;
 
     // copy graphics data
     for (var i = 0; i < this.graphicsData.length; ++i)
@@ -656,62 +611,40 @@ Graphics.prototype.renderCanvas = function (renderer)
         return;
     }
 
-    if (this._cacheAsBitmap)
-    {
-        if (this.dirty || this.cachedSpriteDirty)
-        {
-            this._generateCachedSprite();
+	var context = renderer.context;
+	var transform = this.worldTransform;
 
-            // we will also need to update the texture
-            this.updateCachedSpriteTexture();
+	if (this.blendMode !== renderer.currentBlendMode)
+	{
+		renderer.currentBlendMode = this.blendMode;
+		context.globalCompositeOperation = renderer.blendModes[renderer.currentBlendMode];
+	}
 
-            this.cachedSpriteDirty = false;
-            this.dirty = false;
-        }
+	if (this._mask)
+	{
+		renderer.maskManager.pushMask(this._mask, renderer);
+	}
 
-        this._cachedSprite.alpha = this.alpha;
+	context.setTransform(
+		transform.a,
+		transform.b,
+		transform.c,
+		transform.d,
+		transform.tx,
+		transform.ty
+	);
 
-        Sprite.prototype.renderCanvas.call(this._cachedSprite, renderer);
+	CanvasGraphics.renderGraphics(this, context);
 
-        return;
-    }
-    else
-    {
-        var context = renderer.context;
-        var transform = this.worldTransform;
+	for (var i = 0, j = this.children.length; i < j; ++i)
+	{
+		this.children[i].renderCanvas(renderer);
+	}
 
-        if (this.blendMode !== renderer.currentBlendMode)
-        {
-            renderer.currentBlendMode = this.blendMode;
-            context.globalCompositeOperation = renderer.blendModes[renderer.currentBlendMode];
-        }
-
-        if (this._mask)
-        {
-            renderer.maskManager.pushMask(this._mask, renderer);
-        }
-
-        context.setTransform(
-            transform.a,
-            transform.b,
-            transform.c,
-            transform.d,
-            transform.tx,
-            transform.ty
-        );
-
-        CanvasGraphics.renderGraphics(this, context);
-
-        for (var i = 0, j = this.children.length; i < j; ++i)
-        {
-            this.children[i].renderCanvas(renderer);
-        }
-
-        if (this._mask)
-        {
-            renderer.maskManager.popMask(renderer);
-        }
-    }
+	if (this._mask)
+	{
+		renderer.maskManager.popMask(renderer);
+	}
 };
 
 /**
@@ -732,7 +665,6 @@ Graphics.prototype.getBounds = function (matrix)
         this.updateLocalBounds();
 
         this.glDirty = true;
-        this.cachedSpriteDirty = true;
         this.dirty = false;
     }
 
@@ -892,82 +824,6 @@ Graphics.prototype.updateLocalBounds = function ()
 
     this._localBounds.y = minY - padding;
     this._localBounds.height = (maxY - minY) + padding * 2;
-};
-
-/**
- * Generates the cached sprite when the sprite has cacheAsBitmap = true
- *
- * @private
- */
-Graphics.prototype._generateCachedSprite = function ()
-{
-    var bounds = this.getLocalBounds();
-
-    if (!this._cachedSprite)
-    {
-        var canvasBuffer = new CanvasBuffer(bounds.width, bounds.height);
-        var texture = Texture.fromCanvas(canvasBuffer.canvas);
-
-        this._cachedSprite = new Sprite(texture);
-        this._cachedSprite.buffer = canvasBuffer;
-
-        this._cachedSprite.worldTransform = this.worldTransform;
-    }
-    else
-    {
-        this._cachedSprite.buffer.resize(bounds.width, bounds.height);
-    }
-
-    // leverage the anchor to account for the offset of the element
-    this._cachedSprite.anchor.x = -( bounds.x / bounds.width );
-    this._cachedSprite.anchor.y = -( bounds.y / bounds.height );
-
-    // this._cachedSprite.buffer.context.save();
-    this._cachedSprite.buffer.context.translate(-bounds.x,-bounds.y);
-
-    // make sure we set the alpha of the graphics to 1 for the render..
-    this.worldAlpha = 1;
-
-    // now render the graphic..
-    CanvasGraphics.renderGraphics(this, this._cachedSprite.buffer.context);
-
-    this._cachedSprite.alpha = this.alpha;
-};
-
-/**
- * Updates texture size based on canvas size
- *
- * @private
- */
-Graphics.prototype.updateCachedSpriteTexture = function ()
-{
-    var cachedSprite = this._cachedSprite;
-    var texture = cachedSprite.texture;
-    var canvas = cachedSprite.buffer.canvas;
-
-    texture.baseTexture.width = canvas.width;
-    texture.baseTexture.height = canvas.height;
-    texture.crop.width = texture.frame.width = canvas.width;
-    texture.crop.height = texture.frame.height = canvas.height;
-
-    cachedSprite._width = canvas.width;
-    cachedSprite._height = canvas.height;
-
-    // update the dirty base textures
-    texture.baseTexture.dirty();
-};
-
-/**
- * Destroys a previous cached sprite.
- *
- */
-Graphics.prototype.destroyCachedSprite = function ()
-{
-    this._cachedSprite.texture.destroy(true);
-
-    // let the gc collect the unused sprite
-    // TODO could be object pooled!
-    this._cachedSprite = null;
 };
 
 /**

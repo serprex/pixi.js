@@ -270,9 +270,9 @@ RenderTexture.prototype.getCanvas = function ()
         gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, webGLPixels);
         gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
-        tempCanvas.context.putImageData(new ImageData(new Uint8Array(webGLPixels), width, height), 0, 0);
-
-        return tempCanvas.canvas;
+		var canvas = document.createElement('canvas');
+        canvas.getContext('2d').putImageData(new ImageData(new Uint8ClampedArray(webGLPixels), width, height), 0, 0);
+        return canvas;
     }
     else
     {

@@ -333,7 +333,7 @@ SpriteRenderer.prototype.flush = function ()
     var shader;
 
     // upload the verts to the buffer
-    if (this.currentBatchSize > ( this.size * 0.5 ) )
+    if (this.currentBatchSize * 2 > this.size)
     {
         gl.bufferSubData(gl.ARRAY_BUFFER, 0, this.vertices);
     }

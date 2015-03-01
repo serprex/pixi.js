@@ -102,13 +102,11 @@ module.exports = Object.freeze({
      * @constant
      * @property {object} defaultRenderOptions
      * @property {HTMLCanvasElement} defaultRenderOptions.view=null
-     * @property {boolean} defaultRenderOptions.transparent=false
      * @property {boolean} defaultRenderOptions.preserveDrawingBuffer=false
      * @property {boolean} defaultRenderOptions.clearBeforeRender=true
      */
     defaultRenderOptions: {
         view: null,
-        transparent: true,
         clearBeforeRender: true,
         preserveDrawingBuffer: false
     },
@@ -130,5 +128,5 @@ module.exports = Object.freeze({
         RECT: 1,
     },
 
-    SPRITE_BATCH_SIZE: 2000 //nice balance between mobile and desktop machines
+    SPRITE_BATCH_SIZE: 2048 //nice balance between mobile and desktop machines
 });

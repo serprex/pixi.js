@@ -341,8 +341,6 @@ WebGLRenderer.prototype.destroy = function (removeView)
     // call base destroy
     SystemRenderer.prototype.destroy.call(this, removeView);
 
-    this.uuid = 0;
-
     // destroy the managers
     this.shaderManager.destroy();
     this.maskManager.destroy();

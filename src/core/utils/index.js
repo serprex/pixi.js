@@ -4,23 +4,12 @@ var CONST = require('../const');
  * @namespace PIXI
  */
 var utils = module.exports = {
-    _uid: 0,
     _saidHello: false,
 
     EventData:      require('./EventData'),
     eventTarget:    require('./eventTarget'),
     pluginTarget:   require('./pluginTarget'),
     PolyK:          require('./PolyK'),
-
-    /**
-     * Gets the next uuid
-     *
-     * @return {number} The next uuid to use.
-     */
-    uuid: function ()
-    {
-        return ++utils._uid;
-    },
 
     /**
      * Converts a hex color number to an [R, G, B] array

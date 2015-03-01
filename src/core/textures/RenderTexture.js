@@ -217,7 +217,10 @@ RenderTexture.prototype.render = function (displayObject, matrix)
 	});
 
     this.renderer.renderDisplayObject(displayObject, this.renderer.type === CONST.RENDERER_TYPE.WEBGL ? this.renderTarget : this.renderTarget.context);
-	this.renderer.setRenderTarget(this.renderer.renderTarget);
+	if (this.renderer.renderTarget)
+	{
+		this.renderer.setRenderTarget(this.renderer.renderTarget);
+	}
 };
 
 RenderTexture.prototype.destroy = function ()

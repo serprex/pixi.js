@@ -117,12 +117,10 @@ ShaderManager.prototype.setAttribs = function (attribs)
  */
 ShaderManager.prototype.setShader = function (shader)
 {
-    if (this._currentId === shader.uuid)
+    if (this.currentShader === shader)
     {
         return false;
     }
-
-    this._currentId = shader.uuid;
 
     this.currentShader = shader;
 

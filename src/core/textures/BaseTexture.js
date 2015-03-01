@@ -12,8 +12,6 @@ var utils = require('../utils'),
  */
 function BaseTexture(source, scaleMode)
 {
-    this.uuid = utils.uuid();
-
     /**
      * The width of the base texture set when the image has loaded
      *

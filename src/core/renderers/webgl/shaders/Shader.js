@@ -18,12 +18,6 @@ function Shader(shaderManager, vertexSrc, fragmentSrc, uniforms, attributes)
     }
 
     /**
-     * @member {number}
-     * @readonly
-     */
-    this.uuid = utils.uuid();
-
-    /**
      * @member {WebGLContext}
      * @readonly
      */

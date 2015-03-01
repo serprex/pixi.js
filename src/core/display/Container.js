@@ -471,12 +471,9 @@ Container.prototype.renderWebGL = function (renderer)
     else
     {
         this._renderWebGL(renderer);
-
-        // simple render children!
-        for (i = 0, j = this.children.length; i < j; ++i)
-        {
-            this.children[i].renderWebGL(renderer);
-        }
+		this.children.forEach(function(child){
+			child.renderWebGL(renderer);
+		});
     }
 };
 
@@ -484,8 +481,6 @@ Container.prototype._renderWebGL = function (/* renderer */)
 {
     // this is where content itself gets renderd..
 };
-
-
 
 /**
  * Renders the object using the Canvas renderer
@@ -504,10 +499,9 @@ Container.prototype.renderCanvas = function (renderer)
         renderer.maskManager.pushMask(this._mask, renderer);
     }
 
-    for (var i = 0, j = this.children.length; i < j; ++i)
-    {
-        this.children[i].renderCanvas(renderer);
-    }
+    this.children.forEach(function(child){
+        child.renderCanvas(renderer);
+    });
 
     if (this._mask)
     {

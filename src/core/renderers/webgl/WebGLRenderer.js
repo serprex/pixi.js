@@ -57,13 +57,6 @@ function WebGLRenderer(width, height, options)
     };
 
     /**
-     * Counter for the number of draws made each frame
-     *
-     * @member {number}
-     */
-    this.drawCount = 0;
-
-    /**
      * Deals with managing the shader programs and their attribs.
      *
      * @member {ShaderManager}
@@ -143,6 +136,8 @@ WebGLRenderer.prototype._initContext = function ()
     gl.disable(gl.DEPTH_TEST);
     gl.disable(gl.CULL_FACE);
     gl.enable(gl.BLEND);
+	gl.clearColor(0, 0, 0, 0);
+
 
     this.renderTarget = new RenderTarget(this.gl, this.width, this.height, null, true);
 
@@ -159,8 +154,9 @@ WebGLRenderer.prototype._initContext = function ()
  */
 WebGLRenderer.prototype.render = function (object)
 {
+    var gl = this.gl;
     // no point rendering if our context has been blown up!
-    if (this.gl.isContextLost())
+    if (gl.isContextLost())
     {
         return;
     }
@@ -175,18 +171,12 @@ WebGLRenderer.prototype.render = function (object)
 
     object.parent = cacheParent;
 
-    var gl = this.gl;
-
-    // make sure we are bound to the main frame buffer
-    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-
     if (this.clearBeforeRender)
     {
-		gl.clearColor(0, 0, 0, 0);
         gl.clear(gl.COLOR_BUFFER_BIT);
     }
 
-    this.renderDisplayObject(object, this.renderTarget);//this.projection);
+    this.renderDisplayObject(object, this.renderTarget);
 };
 
 /**
@@ -196,16 +186,11 @@ WebGLRenderer.prototype.render = function (object)
  * @param projection {Point} The projection
  * @param buffer {Array} a standard WebGL buffer
  */
-WebGLRenderer.prototype.renderDisplayObject = function (displayObject, renderTarget)//projection, buffer)
+WebGLRenderer.prototype.renderDisplayObject = function (displayObject, renderTarget)
 {
     this.blendModeManager.setBlendMode(CONST.blendModes.NORMAL);
 
     this.setRenderTarget(renderTarget);
-
-
-
-    // reset the render session data..
-    this.drawCount = 0;
 
     // start the filter manager
     this.filterManager.begin();
@@ -377,8 +362,6 @@ WebGLRenderer.prototype.destroy = function (removeView)
     this.handleContextRestored = null;
 
     this._contextOptions = null;
-
-    this.drawCount = 0;
 
     this.gl = null;
 };

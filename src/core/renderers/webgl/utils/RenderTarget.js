@@ -101,8 +101,8 @@ RenderTarget.prototype.clear = function()
 {
     var gl = this.gl;
     gl.bindFramebuffer(gl.FRAMEBUFFER, this.frameBuffer);
-    gl.clearColor(0,0,0,0);
     gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 };
 
 RenderTarget.prototype.attachStenilBuffer = function()

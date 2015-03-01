@@ -66,33 +66,6 @@ function CanvasRenderer(width, height, options)
      */
     this.currentBlendMode = CONST.blendModes.NORMAL;
 
-    /**
-     * The canvas property used to set the canvas smoothing property.
-     *
-     * @member {string}
-     */
-    this.smoothProperty = 'imageSmoothingEnabled';
-
-    if (!this.context.imageSmoothingEnabled)
-    {
-        if (this.context.webkitImageSmoothingEnabled)
-        {
-            this.smoothProperty = 'webkitImageSmoothingEnabled';
-        }
-        else if (this.context.mozImageSmoothingEnabled)
-        {
-            this.smoothProperty = 'mozImageSmoothingEnabled';
-        }
-        else if (this.context.oImageSmoothingEnabled)
-        {
-            this.smoothProperty = 'oImageSmoothingEnabled';
-        }
-        else if (this.context.msImageSmoothingEnabled)
-        {
-            this.smoothProperty = 'msImageSmoothingEnabled';
-        }
-    }
-
     this._mapBlendModes();
 
     /**
@@ -165,8 +138,6 @@ CanvasRenderer.prototype.destroy = function (removeView)
 
     this.currentScaleMode = 0;
     this.currentBlendMode = 0;
-
-    this.smoothProperty = null;
 };
 
 /**

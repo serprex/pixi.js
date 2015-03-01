@@ -103,25 +103,6 @@ function RenderTexture(renderer, width, height, scaleMode)
     //this.crop = new math.Rectangle(0, 0, this.width, this.height);
 
     /**
-     * Draw/render the given DisplayObject onto the texture.
-     *
-     * The displayObject and descendents are transformed during this operation.
-     * If `restoreWorldTransform` is true then the transformations will be restored before the
-     * method returns. Otherwise it is up to the calling code to correctly use or reset
-     * the transformed display objects.
-     *
-     * The display object is always rendered with a worldAlpha value of 1.
-     *
-     * @method
-     * @param displayObject {DisplayObject} The display object to render this texture on
-     * @param [matrix] {Matrix} Optional matrix to apply to the display object before rendering.
-     * @param [clear=false] {boolean} If true the texture will be cleared before the displayObject is drawn
-     * @param [restoreWorldTransform=true] {boolean} If true the displayObject's worldTransform/worldAlpha and all children
-     *  transformations will be restored. Not restoring this information will be a little faster.
-     */
-    this.render = null;
-
-    /**
      * The renderer this RenderTexture uses. A RenderTexture can only belong to one renderer at the moment if its webGL.
      *
      * @member {CanvasRenderer|WebGLRenderer}
@@ -132,17 +113,13 @@ function RenderTexture(renderer, width, height, scaleMode)
     {
         var gl = this.renderer.gl;
 
-        this.textureBuffer = new RenderTarget(gl, this.width, this.height);//, this.baseTexture.scaleMode);
-        this.baseTexture._glTextures[gl.id] =  this.textureBuffer.texture;
-
-        this.render = this.renderWebGL;
+        this.renderTarget = new RenderTarget(gl, this.width, this.height);
+        this.baseTexture._glTextures[gl.id] = this.renderTarget.texture;
     }
     else
     {
-
-        this.render = this.renderCanvas;
-        this.textureBuffer = new CanvasBuffer(this.width, this.height);
-        this.baseTexture.source = this.textureBuffer.canvas;
+        this.renderTarget = new CanvasBuffer(this.width, this.height);
+        this.baseTexture.source = this.renderTarget.canvas;
     }
 
     /**
@@ -193,7 +170,7 @@ RenderTexture.prototype.resize = function (width, height, updateBase)
         return;
     }
 
-    this.textureBuffer.resize(this.width, this.height);
+    this.renderTarget.resize(this.width, this.height);
 };
 
 /**
@@ -206,13 +183,7 @@ RenderTexture.prototype.clear = function ()
     {
         return;
     }
-
-    if (this.renderer.type === CONST.RENDERER_TYPE.WEBGL)
-    {
-        this.renderer.gl.bindFramebuffer(this.renderer.gl.FRAMEBUFFER, this.textureBuffer.frameBuffer);
-    }
-
-    this.textureBuffer.clear();
+    this.renderTarget.clear();
 };
 
 /**
@@ -221,34 +192,16 @@ RenderTexture.prototype.clear = function ()
  * @private
  * @param displayObject {DisplayObject} The display object to render this texture on
  * @param [matrix] {Matrix} Optional matrix to apply to the display object before rendering.
- * @param [clear=false] {boolean} If true the texture will be cleared before the displayObject is drawn
- * @param [restoreWorldTransform=true] {boolean} If true the displayObject's worldTransform/worldAlpha and all children
  *  transformations will be restored. Not restoring this information will be a little faster.
  */
-RenderTexture.prototype.renderWebGL = function (displayObject, matrix, clear, restoreWorldTransform)
+RenderTexture.prototype.render = function (displayObject, matrix)
 {
     if (!this.valid)
     {
         return;
     }
 
-    if (typeof restoreWorldTransform === 'undefined')
-    {
-        restoreWorldTransform = true;
-    }
-
-    var tempAlpha,
-        tempTransform;
-
-    if (restoreWorldTransform)
-    {
-        tempAlpha = displayObject.worldAlpha;
-        tempTransform = displayObject.worldTransform.toArray();
-    }
-
-    //TOOD replace position with matrix..
-
-    //Lets create a nice matrix to apply to our display object. Frame buffers come in upside down so we need to flip the matrix
+    //Let's create a nice matrix to apply to our display object. Frame buffers come in upside down so we need to flip the matrix
     var wt = displayObject.worldTransform;
 
     wt.identity();
@@ -258,88 +211,20 @@ RenderTexture.prototype.renderWebGL = function (displayObject, matrix, clear, re
         wt.append(matrix);
     }
 
-    // setWorld Alpha to ensure that the object is renderer at full opacity
-    displayObject.worldAlpha = 1;
-
     // Time to update all the children of the displayObject with the new matrix..
-    var children = displayObject.children;
-    var i, j;
+	displayObject.children.forEach(function(child){
+		child.updateTransform();
+	});
 
-    for (i = 0, j = children.length; i < j; ++i)
-    {
-        children[i].updateTransform();
-    }
-
-    if (clear)
-    {
-        this.textureBuffer.clear();
-    }
-
-    this.renderer.renderDisplayObject(displayObject, this.textureBuffer);
-
-    if (restoreWorldTransform)
-    {
-        displayObject.worldAlpha = tempAlpha;
-        displayObject.worldTransform.fromArray(tempTransform);
-
-        for (i = 0, j = children.length; i < j; ++i)
-        {
-            children[i].updateTransform();
-        }
-    }
-};
-
-
-/**
- * Internal method assigned to the `render` property if using a CanvasRenderer.
- *
- * @private
- * @param displayObject {DisplayObject} The display object to render this texture on
- * @param [matrix] {Matrix} Optional matrix to apply to the display object before rendering.
- * @param [clear] {boolean} If true the texture will be cleared before the displayObject is drawn
- */
-RenderTexture.prototype.renderCanvas = function (displayObject, matrix, clear)
-{
-    if (!this.valid)
-    {
-        return;
-    }
-
-    var wt = displayObject.worldTransform;
-
-    wt.identity();
-
-    if (matrix)
-    {
-        wt.append(matrix);
-    }
-
-    // setWorld Alpha to ensure that the object is renderer at full opacity
-    displayObject.worldAlpha = 1;
-
-    // Time to update all the children of the displayObject with the new matrix..
-    var children = displayObject.children;
-    var i, j;
-
-    for (i = 0, j = children.length; i < j; ++i)
-    {
-        children[i].updateTransform();
-    }
-
-    if (clear)
-    {
-        this.textureBuffer.clear();
-    }
-
-    this.renderer.renderDisplayObject(displayObject, this.textureBuffer.context);
-
+    this.renderer.renderDisplayObject(displayObject, this.renderer.type === CONST.RENDERER_TYPE.WEBGL ? this.renderTarget : this.renderTarget.context);
+	this.renderer.setRenderTarget(this.renderer.renderTarget);
 };
 
 RenderTexture.prototype.destroy = function ()
 {
     Texture.prototype.destroy.call(this, true);
 
-    this.textureBuffer.destroy();
+    this.renderTarget.destroy();
 
     this.renderer = null;
 };
@@ -376,25 +261,21 @@ RenderTexture.prototype.getCanvas = function ()
     if (this.renderer.type === CONST.RENDERER_TYPE.WEBGL)
     {
         var gl = this.renderer.gl;
-        var width = this.textureBuffer.width;
-        var height = this.textureBuffer.height;
+        var width = this.renderTarget.width;
+        var height = this.renderTarget.height;
 
         var webGLPixels = new Uint8Array(4 * width * height);
 
-        gl.bindFramebuffer(gl.FRAMEBUFFER, this.textureBuffer.frameBuffer);
+        gl.bindFramebuffer(gl.FRAMEBUFFER, this.renderTarget.frameBuffer);
         gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, webGLPixels);
         gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
-        var tempCanvas = new CanvasBuffer(width, height);
-        var canvasData = tempCanvas.context.getImageData(0, 0, width, height);
-        canvasData.data.set(webGLPixels);
-
-        tempCanvas.context.putImageData(canvasData, 0, 0);
+        tempCanvas.context.putImageData(new ImageData(new Uint8Array(webGLPixels), width, height), 0, 0);
 
         return tempCanvas.canvas;
     }
     else
     {
-        return this.textureBuffer.canvas;
+        return this.renderTarget.canvas;
     }
 };

@@ -442,9 +442,6 @@ SpriteRenderer.prototype.renderBatch = function (texture, size, startIndex)
 
     // now draw those suckas!
     gl.drawElements(gl.TRIANGLES, size * 6, gl.UNSIGNED_SHORT, startIndex * 6 * 2);
-
-    // increment the draw count
-    this.renderer.drawCount++;
 };
 
 /**

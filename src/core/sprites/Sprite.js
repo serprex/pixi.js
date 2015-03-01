@@ -326,13 +326,6 @@ Sprite.prototype.renderCanvas = function (renderer)
     {
         renderer.context.globalAlpha = this.worldAlpha;
 
-        // If smoothingEnabled is supported and we need to change the smoothing property for this texture
-        if (renderer.smoothProperty && renderer.currentScaleMode !== this.texture.baseTexture.scaleMode)
-        {
-            renderer.currentScaleMode = this.texture.baseTexture.scaleMode;
-            renderer.context[renderer.smoothProperty] = (renderer.currentScaleMode === CONST.scaleModes.LINEAR);
-        }
-
         // If the texture is trimmed we offset by the trim x/y, otherwise we use the frame dimensions
         var dx = (this.texture.trim) ? this.texture.trim.x - this.anchor.x * this.texture.trim.width : this.anchor.x * -this.texture._frame.width;
         var dy = (this.texture.trim) ? this.texture.trim.y - this.anchor.y * this.texture.trim.height : this.anchor.y * -this.texture._frame.height;
@@ -395,10 +388,9 @@ Sprite.prototype.renderCanvas = function (renderer)
         }
     }
 
-    for (var i = 0, j = this.children.length; i < j; i++)
-    {
-        this.children[i].renderCanvas(renderer);
-    }
+	this.children.forEach(function(child){
+		child.renderCanvas(renderer);
+	});
 
     if (this._mask)
     {

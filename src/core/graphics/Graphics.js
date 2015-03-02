@@ -603,28 +603,16 @@ Graphics.prototype._renderWebGL = function (renderer)
  * @param renderer {CanvasRenderer}
  * @private
  */
-Graphics.prototype.renderCanvas = function (renderer)
+Graphics.prototype._renderCanvas = function (renderer)
 {
-    // if the sprite is not visible or the alpha is 0 then no need to render this element
-    if (!this.visible || this.alpha <= 0 || !this.renderable)
-    {
-        return;
-    }
-
 	var context = renderer.context;
-	var transform = this.worldTransform;
-
 	if (this.blendMode !== renderer.currentBlendMode)
 	{
 		renderer.currentBlendMode = this.blendMode;
 		context.globalCompositeOperation = renderer.blendModes[renderer.currentBlendMode];
 	}
 
-	if (this._mask)
-	{
-		renderer.maskManager.pushMask(this._mask, renderer);
-	}
-
+	var transform = this.worldTransform;
 	context.setTransform(
 		transform.a,
 		transform.b,
@@ -635,16 +623,6 @@ Graphics.prototype.renderCanvas = function (renderer)
 	);
 
 	CanvasGraphics.renderGraphics(this, context);
-
-	for (var i = 0, j = this.children.length; i < j; ++i)
-	{
-		this.children[i].renderCanvas(renderer);
-	}
-
-	if (this._mask)
-	{
-		renderer.maskManager.popMask(renderer);
-	}
 };
 
 /**

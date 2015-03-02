@@ -16,7 +16,6 @@ var core = module.exports = {
     math:  require('./math'),
 
     // display
-    DisplayObject:          require('./display/DisplayObject'),
     Container:              require('./display/Container'),
 
 	// sprites
@@ -46,15 +45,9 @@ var core = module.exports = {
     // filters - webgl
     AbstractFilter:         require('./renderers/webgl/filters/AbstractFilter'),
 
-    autoDetectRenderer: function (width, height, options)
-    {
-        if (require('webgl-enabled')(options && options.view))
-        {
-            return new core.WebGLRenderer(width, height, options);
-        }
-
-        return new core.CanvasRenderer(width, height, options);
-    },
+    autoDetectRenderer:function(width, height, options){
+		return new (require('webgl-enabled')(options && options.view) ? core.WebGLRenderer : core.CanvasRenderer)(width, height, options);
+	},
 };
 
 

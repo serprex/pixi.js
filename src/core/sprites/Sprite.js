@@ -303,9 +303,9 @@ Sprite.prototype.getBounds = function (matrix)
 *
 * @param renderer {CanvasRenderer} The renderer
 */
-Sprite.prototype.renderCanvas = function (renderer)
+Sprite.prototype._renderCanvas = function (renderer)
 {
-    if (!this.visible || this.alpha <= 0 || this.texture.crop.width <= 0 || this.texture.crop.height <= 0)
+    if (this.texture.crop.width <= 0 || this.texture.crop.height <= 0)
     {
         return;
     }
@@ -314,11 +314,6 @@ Sprite.prototype.renderCanvas = function (renderer)
     {
         renderer.currentBlendMode = this.blendMode;
         renderer.context.globalCompositeOperation = renderer.blendModes[renderer.currentBlendMode];
-    }
-
-    if (this._mask)
-    {
-        renderer.maskManager.pushMask(this._mask, renderer);
     }
 
     //  Ignore null sources
@@ -386,14 +381,5 @@ Sprite.prototype.renderCanvas = function (renderer)
                 this.texture.crop.width, this.texture.crop.height
             );
         }
-    }
-
-	this.children.forEach(function(child){
-		child.renderCanvas(renderer);
-	});
-
-    if (this._mask)
-    {
-        renderer.maskManager.popMask(renderer);
     }
 };

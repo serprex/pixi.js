@@ -425,10 +425,10 @@ Container.prototype.renderWebGL = function (renderer)
         return;
     }
 
-    var i, j;
+    var filterOrMask = this._mask || this._filters;
 
     // do a quick check to see if this element has a mask or a filter.
-    if (this._mask || this._filters)
+    if (filterOrMask)
     {
         renderer.currentRenderer.flush();
 
@@ -444,16 +444,16 @@ Container.prototype.renderWebGL = function (renderer)
         }
 
         renderer.currentRenderer.start();
+	}
 
         // add this object to the batch, only rendered if it has a texture.
         this._renderWebGL(renderer);
+		this.children.forEach(function(child){
+			child.renderWebGL(renderer);
+		});
 
-        // now loop through the children and make sure they get rendered
-        for (i = 0, j = this.children.length; i < j; i++)
-        {
-            this.children[i].renderWebGL(renderer);
-        }
-
+	if (filterOrMask)
+	{
         renderer.currentRenderer.flush();
 
         if (this._mask)
@@ -468,16 +468,9 @@ Container.prototype.renderWebGL = function (renderer)
         }
         renderer.currentRenderer.start();
     }
-    else
-    {
-        this._renderWebGL(renderer);
-		this.children.forEach(function(child){
-			child.renderWebGL(renderer);
-		});
-    }
 };
 
-Container.prototype._renderWebGL = function (/* renderer */)
+Container.prototype._renderCanvas = Container.prototype._renderWebGL = function (/* renderer */)
 {
     // this is where content itself gets renderd..
 };
@@ -499,6 +492,7 @@ Container.prototype.renderCanvas = function (renderer)
         renderer.maskManager.pushMask(this._mask, renderer);
     }
 
+	this._renderCanvas(renderer);
     this.children.forEach(function(child){
         child.renderCanvas(renderer);
     });

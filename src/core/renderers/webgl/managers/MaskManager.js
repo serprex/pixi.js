@@ -1,5 +1,4 @@
-var WebGLManager = require('./WebGLManager'),
-    AlphaMaskFilter = require('../filters/SpriteMaskFilter');
+var WebGLManager = require('./WebGLManager');
 
 /**
  * @class
@@ -13,8 +12,6 @@ function MaskManager(renderer)
     this.stencilStack = [];
     this.reverse = true;
     this.count = 0;
-
-    this.alphaMaskPool = [];
 }
 
 MaskManager.prototype = Object.create(WebGLManager.prototype);
@@ -29,15 +26,7 @@ module.exports = MaskManager;
  */
 MaskManager.prototype.pushMask = function (target, maskData)
 {
-    if (maskData.texture)
-    {
-        this.pushSpriteMask(target, maskData);
-    }
-    else
-    {
-        this.pushStencilMask(target, maskData);
-    }
-
+	this.pushStencilMask(target, maskData);
 };
 
 MaskManager.prototype.popMask = function (target, maskData)
@@ -51,30 +40,6 @@ MaskManager.prototype.popMask = function (target, maskData)
         this.popStencilMask(target, maskData);
     }
 };
-
-MaskManager.prototype.pushSpriteMask = function (target, maskData)
-{
-    var alphaMaskFilter = this.alphaMaskPool.pop();
-
-    if (!alphaMaskFilter)
-    {
-        alphaMaskFilter = [new AlphaMaskFilter(maskData)];
-    }
-
-    this.renderer.filterManager.pushFilter(target, alphaMaskFilter);
-};
-
-/**
- * Removes the last filter from the filter stack and doesn't return it.
- *
- */
-MaskManager.prototype.popSpriteMask = function ()
-{
-    var filters = this.renderer.filterManager.popFilter();
-
-    this.alphaMaskPool.push(filters);
-};
-
 
 /**
  * Applies the Mask and adds it to the current filter stack.

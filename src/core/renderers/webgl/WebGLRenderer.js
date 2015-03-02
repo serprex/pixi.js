@@ -2,7 +2,6 @@ var SystemRenderer = require('../SystemRenderer'),
     ShaderManager = require('./managers/ShaderManager'),
     MaskManager = require('./managers/MaskManager'),
     StencilManager = require('./managers/StencilManager'),
-    FilterManager = require('./managers/FilterManager'),
     BlendModeManager = require('./managers/BlendModeManager'),
     RenderTarget = require('./utils/RenderTarget'),
     ObjectRenderer = require('./utils/ObjectRenderer'),
@@ -76,14 +75,6 @@ function WebGLRenderer(width, height, options)
      * @member {StencilManager}
      */
     this.stencilManager = new StencilManager(this);
-
-    /**
-     * Manages the filters.
-     *
-     * @member {FilterManager}
-     */
-    this.filterManager = new FilterManager(this);
-
 
     /**
      * Manages the blendModes
@@ -188,9 +179,6 @@ WebGLRenderer.prototype.renderDisplayObject = function (displayObject, renderTar
 
     this.setRenderTarget(renderTarget);
 
-    // start the filter manager
-    this.filterManager.begin();
-
     // render the scene!
     displayObject.renderWebGL(this);
 
@@ -234,7 +222,6 @@ WebGLRenderer.prototype.resize = function (width, height)
 
     this.gl.viewport(0, 0, this.width, this.height);
 
-    this.filterManager.resize(width, height);
     this.renderTarget.resize(width, height);
 };
 
@@ -345,11 +332,9 @@ WebGLRenderer.prototype.destroy = function (removeView)
     this.shaderManager.destroy();
     this.maskManager.destroy();
     this.stencilManager.destroy();
-    this.filterManager.destroy();
 
     this.shaderManager = null;
     this.maskManager = null;
-    this.filterManager = null;
     this.blendModeManager = null;
 
     this.handleContextLost = null;

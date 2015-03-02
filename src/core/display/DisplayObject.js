@@ -88,14 +88,6 @@ function DisplayObject()
     this.worldTransform = new math.Matrix();
 
     /**
-     * The area the filter is applied to. This is used as more of an optimisation
-     * rather than figuring out the dimensions of the displayObject each frame you can set this rectangle
-     *
-     * @member {Rectangle}
-     */
-    this.filterArea = null;
-
-    /**
      * cached sin rotation
      *
      * @member {number}
@@ -238,26 +230,6 @@ Object.defineProperties(DisplayObject.prototype, {
             }
         }
     },
-
-    /**
-     * Sets the filters for the displayObject.
-     * * IMPORTANT: This is a webGL only feature and will be ignored by the canvas renderer.
-     * To remove filters simply set this property to 'null'
-     *
-     * @member {Filter[]}
-     * @memberof DisplayObject#
-     */
-    filters: {
-        get: function ()
-        {
-            return this._filters && this._filters.slice();
-        },
-        set: function (value)
-        {
-            this._filters = value && value.slice();
-        }
-    }
-
 });
 
 /*

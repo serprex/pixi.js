@@ -75,23 +75,15 @@ AbstractFilter.prototype.getShader = function (renderer)
     return shader;
 };
 
-AbstractFilter.prototype.applyFilter = function (renderer, input, output, clear)
-{
-    var shader = this.getShader(renderer);
-
-    renderer.filterManager.applyFilter(shader, input, output, clear);
-};
-
 /**
  * Syncs a uniform between the class object and the shaders.
  *
  */
 AbstractFilter.prototype.syncUniform = function (uniform)
 {
-    for (var i = 0, j = this.shaders.length; i < j; ++i)
-    {
-        this.shaders[i].syncUniform(uniform);
-    }
+	this.shaders.forEach(function(shader){
+		shader.syncUniform(uniform);
+	});
 };
 
 /*

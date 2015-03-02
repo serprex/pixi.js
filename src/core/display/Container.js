@@ -425,24 +425,16 @@ Container.prototype.renderWebGL = function (renderer)
         return;
     }
 
-    var filterOrMask = this._mask || this._filters;
+    var filterOrMask = this._mask;
 
     // do a quick check to see if this element has a mask or a filter.
     if (filterOrMask)
     {
         renderer.currentRenderer.flush();
-
-        // push filter first as we need to ensure the stencil buffer is correct for any masking
-        if (this._filters)
-        {
-            renderer.filterManager.pushFilter(this, this._filters);
-        }
-
         if (this._mask)
         {
             renderer.maskManager.pushMask(this, this._mask);
         }
-
         renderer.currentRenderer.start();
 	}
 
@@ -455,16 +447,9 @@ Container.prototype.renderWebGL = function (renderer)
 	if (filterOrMask)
 	{
         renderer.currentRenderer.flush();
-
         if (this._mask)
         {
             renderer.maskManager.popMask(this, this._mask);
-        }
-
-        if (this._filters)
-        {
-            renderer.filterManager.popFilter();
-
         }
         renderer.currentRenderer.start();
     }

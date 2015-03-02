@@ -1,5 +1,4 @@
 var ObjectRenderer = require('../../renderers/webgl/utils/ObjectRenderer'),
-    Shader = require('../../renderers/webgl/shaders/Shader'),
     WebGLRenderer = require('../../renderers/webgl/WebGLRenderer'),
     CONST = require('../../const');
 
@@ -130,13 +129,6 @@ function SpriteRenderer(renderer)
      * @member {Array}
      */
     this.blendModes = [];
-
-    /**
-     *
-     *
-     * @member {Array}
-     */
-    this.shaders = [];
 
     /**
      *
@@ -385,20 +377,14 @@ SpriteRenderer.prototype.flush = function ()
             {
                 currentShader = nextShader;
 
-                shader = currentShader.shaders ? currentShader.shaders[gl.id] : currentShader;
-
-                if (!shader)
-                {
-                    shader = new Shader(this.renderer.shaderManager, null, currentShader.fragmentSrc, currentShader.uniforms);
-                    currentShader.shaders[gl.id] = shader;
-                }
+                shader = currentShader;
 
                 // set shader function???
                 this.renderer.shaderManager.setShader(shader);
 
                 ///console.log(shader.uniforms.projectionMatrix);
 
-                // both thease only need to be set if they are changing..
+                // both these only need to be set if they are changing..
                 // set the projection
                 gl.uniformMatrix3fv(shader.uniforms.projectionMatrix._location, false, this.renderer.currentRenderTarget.projectionMatrix.toArray(true));
             }
@@ -495,7 +481,6 @@ SpriteRenderer.prototype.destroy = function ()
 
     this.textures = null;
     this.blendModes = null;
-    this.shaders = null;
     this.sprites = null;
     this.shader = null;
 };

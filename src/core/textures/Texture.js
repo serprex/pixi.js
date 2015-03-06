@@ -152,7 +152,7 @@ Object.defineProperties(Texture.prototype, {
                 throw new Error('Texture Error: frame does not fit inside the base Texture dimensions ' + this);
             }
 
-            this.valid = frame && frame.width && frame.height && this.baseTexture.source && this.baseTexture.hasLoaded;
+            this.valid = frame && frame.width && frame.height && this.baseTexture.hasLoaded;
 
             if (this.trim)
             {

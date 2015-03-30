@@ -120,7 +120,6 @@ WebGLRenderer.prototype._initContext = function ()
     }
 
     this.glContextId = WebGLRenderer.glContextId++;
-    gl.id = this.glContextId;
     gl.renderer = this;
 
     // set up the default pixi settings..
@@ -234,22 +233,21 @@ WebGLRenderer.prototype.updateTexture = function (texture)
 {
     texture = texture.baseTexture || texture;
 
-    if (!texture.hasLoaded)
+    if (!texture.hasLoaded || !texture.source)
     {
         return;
     }
 
     var gl = this.gl;
 
-    if (!texture._glTextures[gl.id])
+    if (!texture._glTexture)
     {
-        texture._glTextures[gl.id] = gl.createTexture();
-        texture.on('update', this._updateTextureBound);
+        texture._glTexture = gl.createTexture();
         texture.on('dispose', this._destroyTextureBound);
     }
 
 
-    gl.bindTexture(gl.TEXTURE_2D, texture._glTextures[gl.id]);
+    gl.bindTexture(gl.TEXTURE_2D, texture._glTexture);
 
     gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, texture.premultipliedAlpha);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, texture.source);
@@ -271,7 +269,9 @@ WebGLRenderer.prototype.updateTexture = function (texture)
 	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, clamp);
 	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, clamp);
 
-    return texture._glTextures[gl.id];
+	texture.source = null;
+
+    return texture._glTexture;
 };
 
 WebGLRenderer.prototype.destroyTexture = function (texture)
@@ -283,10 +283,10 @@ WebGLRenderer.prototype.destroyTexture = function (texture)
         return;
     }
 
-    if (texture._glTextures[this.gl.id])
+    if (texture._glTexture)
     {
-        this.gl.deleteTexture(texture._glTextures[this.gl.id]);
-		delete texture._glTextures[this.gl.id];
+        this.gl.deleteTexture(texture._glTexture);
+		delete texture._glTexture;
     }
 };
 

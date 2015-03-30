@@ -374,7 +374,7 @@ Shader.prototype.syncUniform = function (uniform)
             // activate this texture
             gl.activeTexture(gl['TEXTURE' + this.textureCount]);
 
-            var texture = uniform.value.baseTexture._glTextures[gl.id];
+            var texture = uniform.value.baseTexture._glTexture;
 
             if (!texture)
             {
@@ -418,9 +418,9 @@ Shader.prototype.initSampler2D = function (uniform)
 
     var texture = uniform.value.baseTexture;
 
-    texture._glTextures[gl.id] = gl.createTexture();
+    texture._glTexture = gl.createTexture();
 
-    gl.bindTexture(gl.TEXTURE_2D, texture._glTextures[gl.id]);
+    gl.bindTexture(gl.TEXTURE_2D, texture._glTexture);
 
     gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, texture.premultipliedAlpha);
 
@@ -457,6 +457,7 @@ Shader.prototype.initSampler2D = function (uniform)
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
     }
 
+	texture.source = null;
 };
 
 /**

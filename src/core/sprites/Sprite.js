@@ -35,22 +35,6 @@ function Sprite(texture)
     this._texture = null;
 
     /**
-     * The width of the sprite (this is initially set by the texture)
-     *
-     * @member {number}
-     * @private
-     */
-    this._width = 0;
-
-    /**
-     * The height of the sprite (this is initially set by the texture)
-     *
-     * @member {number}
-     * @private
-     */
-    this._height = 0;
-
-    /**
      * The tint applied to the sprite. This is a hex value. A value of 0xFFFFFF will remove any tint effect.
      *
      * @member {number}
@@ -114,7 +98,6 @@ Object.defineProperties(Sprite.prototype, {
         set: function (value)
         {
             this.scale.x = value / this.texture.frame.width;
-            this._width = value;
         }
     },
 
@@ -127,12 +110,11 @@ Object.defineProperties(Sprite.prototype, {
     height: {
         get: function ()
         {
-            return  this.scale.y * this.texture.frame.height;
+            return this.scale.y * this.texture.frame.height;
         },
         set: function (value)
         {
             this.scale.y = value / this.texture.frame.height;
-            this._height = value;
         }
     },
 
@@ -156,41 +138,9 @@ Object.defineProperties(Sprite.prototype, {
 
             this._texture = value;
             this.cachedTint = 0xFFFFFF;
-
-            if (value)
-            {
-                // wait for the texture to load
-                if (value.baseTexture.hasLoaded)
-                {
-                    this._onTextureUpdate();
-                }
-                else
-                {
-                    value.once('update', this._onTextureUpdate.bind(this));
-                }
-            }
         }
     },
 });
-
-/**
- * When the texture is updated, this event will fire to update the scale and frame
- *
- * @private
- */
-Sprite.prototype._onTextureUpdate = function ()
-{
-    // so if _width is 0 then width was not set..
-    if (this._width)
-    {
-        this.scale.x = this._width / this.texture.frame.width;
-    }
-
-    if (this._height)
-    {
-        this.scale.y = this._height / this.texture.frame.height;
-    }
-};
 
 Sprite.prototype._renderWebGL = function (renderer)
 {

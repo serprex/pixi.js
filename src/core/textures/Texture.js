@@ -67,13 +67,6 @@ function Texture(baseTexture, frame, crop, trim)
     this.valid = false;
 
     /**
-     * This will let a renderer know that a texture has been updated (used mainly for webGL uv updates)
-     *
-     * @member {boolean}
-     */
-    this.requiresUpdate = false;
-
-    /**
      * The WebGL UV data cache.
      *
      * @member {object}
@@ -182,15 +175,6 @@ Object.defineProperties(Texture.prototype, {
 });
 
 /**
- * Updates this texture on the gpu.
- *
- */
-Texture.prototype.update = function ()
-{
-    this.baseTexture.update();
-};
-
-/**
  * Called when the base texture is loaded
  *
  * @private
@@ -209,8 +193,6 @@ Texture.prototype.onBaseTextureLoaded = function ()
     {
         this.frame = this._frame;
     }
-
-    this.emit('update', this);
 };
 
 /**

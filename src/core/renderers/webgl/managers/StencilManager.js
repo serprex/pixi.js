@@ -310,12 +310,12 @@ WebGLMaskManager.prototype.pushMask = function (maskData)
         this.renderer.plugins.graphics.updateGraphics(maskData, this.renderer.gl);
     }
 
-    if (!maskData._webGL[this.renderer.gl.id].data.length)
+    if (!maskData._webGL.data.length)
     {
         return;
     }
 
-    this.pushStencil(maskData, maskData._webGL[this.renderer.gl.id].data[0], this.renderer);
+    this.pushStencil(maskData, maskData._webGL.data[0], this.renderer);
 };
 
 /**
@@ -327,6 +327,6 @@ WebGLMaskManager.prototype.popMask = function (maskData)
 {
     this.renderer.setObjectRenderer(this.renderer.plugins.graphics);
 
-    this.popStencil(maskData, maskData._webGL[this.renderer.gl.id].data[0], this.renderer);
+    this.popStencil(maskData, maskData._webGL.data[0], this.renderer);
 };
 

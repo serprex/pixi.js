@@ -114,7 +114,7 @@ function RenderTexture(renderer, width, height, scaleMode)
         var gl = this.renderer.gl;
 
         this.renderTarget = new RenderTarget(gl, this.width, this.height);
-        this.baseTexture._glTextures[gl.id] = this.renderTarget.texture;
+        this.baseTexture._glTexture = this.renderTarget.texture;
     }
     else
     {

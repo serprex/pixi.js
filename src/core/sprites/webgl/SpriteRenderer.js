@@ -416,14 +416,14 @@ SpriteRenderer.prototype.renderBatch = function (texture, size, startIndex)
 
     var gl = this.renderer.gl;
 
-    if (!texture._glTextures[gl.id])
+    if (!texture._glTexture)
     {
         this.renderer.updateTexture(texture);
     }
     else
     {
         // bind the current texture
-        gl.bindTexture(gl.TEXTURE_2D, texture._glTextures[gl.id]);
+        gl.bindTexture(gl.TEXTURE_2D, texture._glTexture);
     }
 
     // now draw those suckas!

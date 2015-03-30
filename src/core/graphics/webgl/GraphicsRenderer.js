@@ -62,7 +62,7 @@ GraphicsRenderer.prototype.render = function(graphics)
         this.updateGraphics(graphics, gl);
     }
 
-    var webGL = graphics._webGL[gl.id];
+    var webGL = graphics._webGL;
 
     // This  could be speeded up for sure!
 
@@ -127,12 +127,12 @@ GraphicsRenderer.prototype.updateGraphics = function(graphics)
     var gl = this.renderer.gl;
 
      // get the contexts graphics object
-    var webGL = graphics._webGL[gl.id];
+    var webGL = graphics._webGL;
 
     // if the graphics object does not exist in the webGL context time to create it!
     if (!webGL)
     {
-        webGL = graphics._webGL[gl.id] = {lastIndex:0, data:[], gl:gl};
+        webGL = graphics._webGL = {lastIndex:0, data:[], gl:gl};
     }
 
     // flag the graphics as not dirty as we are about to update it...

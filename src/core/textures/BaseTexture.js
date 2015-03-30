@@ -99,12 +99,12 @@ function BaseTexture(source, scaleMode)
     this.mipmap = false;
 
     /**
-     * A map of renderer IDs to webgl textures
+     * webgl texture
      *
-     * @member {object<number, WebGLTexture>}
+     * @member WebGLTexture
      * @private
      */
-    this._glTextures = [];
+    this._glTexture = null;
 
     // if no source passed don't try to load
     if (source)
@@ -131,15 +131,6 @@ BaseTexture.prototype.constructor = BaseTexture;
 module.exports = BaseTexture;
 
 utils.eventTarget.mixin(BaseTexture.prototype);
-
-/**
- * Updates the texture on all the webgl renderers.
- *
- * @fires update
- */
-BaseTexture.prototype.update = function () {
-    this.emit('update', this);
-};
 
 /**
  * Load a source.
@@ -269,8 +260,6 @@ BaseTexture.prototype._sourceLoaded = function ()
     this.height = this.source.naturalHeight || this.source.height;
 
     this.isPowerOfTwo = utils.isPowerOfTwo(this.width, this.height);
-
-    this.update();
 };
 
 /**

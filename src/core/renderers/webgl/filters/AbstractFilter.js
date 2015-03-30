@@ -56,9 +56,7 @@ module.exports = AbstractFilter;
 
 AbstractFilter.prototype.getShader = function (renderer)
 {
-    var gl = renderer.gl;
-
-    var shader = this.shaders[gl.id];
+    var shader = this.shader;
 
     if (!shader)
     {
@@ -69,7 +67,7 @@ AbstractFilter.prototype.getShader = function (renderer)
             this.attributes
         );
 
-        this.shaders[gl.id] = shader;
+        this.shader = shader;
     }
 
     return shader;

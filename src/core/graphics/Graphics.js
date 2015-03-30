@@ -76,13 +76,12 @@ function Graphics()
     this.currentPath = null;
 
     /**
-     * Array containing some WebGL-related properties used by the WebGL renderer.
+     * WebGL-related properties used by the WebGL renderer.
      *
-     * @member {object<number, object>}
+     * @member object
      * @private
      */
-    // TODO - _webgl should use a prototype object, not a random undocumented object...
-    this._webGL = {};
+    this._webGL = null;
 
     /**
      * The bounds' padding used for bounds calculation.

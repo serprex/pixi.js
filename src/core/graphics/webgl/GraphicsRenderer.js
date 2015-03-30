@@ -124,24 +124,14 @@ GraphicsRenderer.prototype.render = function(graphics)
  */
 GraphicsRenderer.prototype.updateGraphics = function(graphics)
 {
-    var gl = this.renderer.gl;
-
-     // get the contexts graphics object
-    var webGL = graphics._webGL;
+    var gl = this.renderer.gl, webGL = graphics._webGL, i;
 
     // if the graphics object does not exist in the webGL context time to create it!
     if (!webGL)
     {
         webGL = graphics._webGL = {lastIndex:0, data:[], gl:gl};
     }
-
-    // flag the graphics as not dirty as we are about to update it...
-    graphics.dirty = false;
-
-    var i;
-
-    // if the user cleared the graphics object we will need to clear every object
-    if (graphics.clearDirty)
+	else if (graphics.clearDirty)
     {
         graphics.clearDirty = false;
 
@@ -157,6 +147,9 @@ GraphicsRenderer.prototype.updateGraphics = function(graphics)
         webGL.data = [];
         webGL.lastIndex = 0;
     }
+
+    // flag the graphics as not dirty as we are about to update it...
+    graphics.dirty = false;
 
     var webGLData;
 

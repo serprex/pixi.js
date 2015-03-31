@@ -45,14 +45,6 @@ function CanvasRenderer(width, height, options)
     this.maskManager = new CanvasMaskManager();
 
     /**
-     * If true Pixi will Math.floor() x/y values when rendering, stopping pixel interpolation.
-     * Handy for crisp pixel art and speed on legacy devices.
-     *
-     * @member {boolean}
-     */
-    this.roundPixels = true;
-
-    /**
      * Tracks the active scale mode for this renderer.
      *
      * @member {CONST.SCALE_MODE}
@@ -133,8 +125,6 @@ CanvasRenderer.prototype.destroy = function (removeView)
 
     this.maskManager.destroy();
     this.maskManager = null;
-
-    this.roundPixels = true;
 
     this.currentScaleMode = 0;
     this.currentBlendMode = 0;

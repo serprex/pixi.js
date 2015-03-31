@@ -272,36 +272,19 @@ Sprite.prototype._renderCanvas = function (renderer)
         renderer.context.globalAlpha = this.worldAlpha;
 
         // If the texture is trimmed we offset by the trim x/y, otherwise we use the frame dimensions
-        var dx = (this.texture.trim) ? this.texture.trim.x - this.anchor.x * this.texture.trim.width : this.anchor.x * -this.texture._frame.width;
-        var dy = (this.texture.trim) ? this.texture.trim.y - this.anchor.y * this.texture.trim.height : this.anchor.y * -this.texture._frame.height;
+        var dx = (this.texture.trim ? this.texture.trim.x - this.anchor.x * this.texture.trim.width : this.anchor.x * -this.texture._frame.width)|0;
+        var dy = (this.texture.trim ? this.texture.trim.y - this.anchor.y * this.texture.trim.height : this.anchor.y * -this.texture._frame.height)|0;
 
 
         // Allow for pixel rounding
-        if (renderer.roundPixels)
-        {
-            renderer.context.setTransform(
-                this.worldTransform.a,
-                this.worldTransform.b,
-                this.worldTransform.c,
-                this.worldTransform.d,
-                this.worldTransform.tx | 0,
-                this.worldTransform.ty | 0
-            );
-
-            dx = dx | 0;
-            dy = dy | 0;
-        }
-        else
-        {
-            renderer.context.setTransform(
-                this.worldTransform.a,
-                this.worldTransform.b,
-                this.worldTransform.c,
-                this.worldTransform.d,
-                this.worldTransform.tx,
-                this.worldTransform.ty
-            );
-        }
+		renderer.context.setTransform(
+			this.worldTransform.a,
+			this.worldTransform.b,
+			this.worldTransform.c,
+			this.worldTransform.d,
+			this.worldTransform.tx | 0,
+			this.worldTransform.ty | 0
+		);
 
         if (this.tint !== 0xFFFFFF)
         {

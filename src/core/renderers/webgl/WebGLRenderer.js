@@ -102,8 +102,6 @@ WebGLRenderer.prototype.constructor = WebGLRenderer;
 module.exports = WebGLRenderer;
 utils.pluginTarget.mixin(WebGLRenderer);
 
-WebGLRenderer.glContextId = 0;
-
 /**
  *
  * @private
@@ -118,9 +116,6 @@ WebGLRenderer.prototype._initContext = function ()
         // fail, not able to get a context
         throw new Error('This browser does not support webGL. Try using the canvas renderer');
     }
-
-    this.glContextId = WebGLRenderer.glContextId++;
-    gl.renderer = this;
 
     // set up the default pixi settings..
     gl.disable(gl.DEPTH_TEST);

@@ -151,7 +151,7 @@ RenderTexture.prototype.resize = function (width, height, updateBase)
     this.valid = (width > 0 && height > 0);
 
     this.width = this._frame.width = this.crop.width = width;
-    this.height =  this._frame.height = this.crop.height = height;
+    this.height = this._frame.height = this.crop.height = height;
 
     if (updateBase)
     {
@@ -161,8 +161,7 @@ RenderTexture.prototype.resize = function (width, height, updateBase)
 
     if (this.renderer.type === CONST.RENDERER_TYPE.WEBGL)
     {
-        this.projection.x = this.width / 2;
-        this.projection.y = -this.height / 2;
+        this.projection.set(this.width / 2, -this.height / 2);
     }
 
     if (!this.valid)

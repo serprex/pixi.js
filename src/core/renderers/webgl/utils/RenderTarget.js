@@ -151,16 +151,16 @@ RenderTarget.prototype.calculateProjection = function( projectionFrame )
 
     if (!this.root)
     {
-        pm.a = 1 / projectionFrame.width*2;
-        pm.d = 1 / projectionFrame.height*2;
+        pm.a = 2 / projectionFrame.width;
+        pm.d = 2 / projectionFrame.height;
 
         pm.tx = -1 - projectionFrame.x * pm.a;
         pm.ty = -1 - projectionFrame.y * pm.d;
     }
     else
     {
-        pm.a = 1 / projectionFrame.width*2;
-        pm.d = -1 / projectionFrame.height*2;
+        pm.a = 2 / projectionFrame.width;
+        pm.d = -2 / projectionFrame.height;
 
         pm.tx = -1 - projectionFrame.x * pm.a;
         pm.ty = 1 - projectionFrame.y * pm.d;
@@ -191,15 +191,15 @@ RenderTarget.prototype.resize = function(width, height)
     {
         var gl = this.gl;
 
-        gl.bindTexture(gl.TEXTURE_2D,  this.texture);
+        gl.bindTexture(gl.TEXTURE_2D, this.texture);
 
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA,  width , height , 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
 
-        if (this.stencilBuffer )
+        if (this.stencilBuffer)
         {
             // update the stencil buffer width and height
             gl.bindRenderbuffer(gl.RENDERBUFFER, this.stencilBuffer);
-            gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_STENCIL,  width  , height );
+            gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_STENCIL, width, height);
         }
     }
 

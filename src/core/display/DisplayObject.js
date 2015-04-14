@@ -250,7 +250,7 @@ DisplayObject.prototype.updateTransform = function ()
     var a, b, c, d, tx, ty;
 
     // so if rotation is between 0 then we can simplify the multiplication process..
-    if (this.rotation % math.PI_2)
+    if (this.rotation % (Math.PI*2))
     {
         // check to see if the rotation is the same as the previous render. This means we only need to use sin and cos when rotation actually changes
         if (this.rotation !== this.rotationCache)

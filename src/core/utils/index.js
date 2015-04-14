@@ -3,9 +3,8 @@ var CONST = require('../const');
 /**
  * @namespace PIXI
  */
-var utils = module.exports = {
-    _saidHello: false,
-
+var saidHello = false;
+module.exports = {
     EventData:      require('./EventData'),
     eventTarget:    require('./eventTarget'),
     pluginTarget:   require('./pluginTarget'),
@@ -19,12 +18,10 @@ var utils = module.exports = {
      */
     hex2rgb: function (hex, out)
     {
-        out = out || [];
-
+        out = out || new Float32Array(3);
         out[0] = (hex >> 16 & 0xFF) / 255;
         out[1] = (hex >> 8 & 0xFF) / 255;
         out[2] = (hex & 0xFF) / 255;
-
         return out;
     },
 
@@ -36,10 +33,7 @@ var utils = module.exports = {
      */
     hex2string: function (hex)
     {
-        hex = hex.toString(16);
-        hex = '000000'.substr(0, 6 - hex.length) + hex;
-
-        return '#' + hex;
+        return '#'+(hex|0x1000000).toString(16).slice(1);
     },
 
     /**
@@ -50,7 +44,7 @@ var utils = module.exports = {
      */
     rgb2hex: function (rgb)
     {
-        return ((rgb[0]*255 << 16) + (rgb[1]*255 << 8) + rgb[2]*255);
+        return (rgb[0]*255 << 16) | (rgb[1]*255 << 8) | rgb[2]*255;
     },
 
     /**
@@ -91,22 +85,19 @@ var utils = module.exports = {
      */
     getNextPowerOfTwo: function (number)
     {
+		number|=0;
         // see: http://en.wikipedia.org/wiki/Power_of_two#Fast_algorithm_to_check_if_a_positive_number_is_a_power_of_two
-        if (number > 0 && (number & (number - 1)) === 0)
+        if (number & (number - 1))
         {
-            return number;
-        }
-        else
-        {
-            var result = 1;
-
-            while (result < number)
-            {
-                result <<= 1;
-            }
-
-            return result;
-        }
+			number--;
+			number|=number>>1;
+			number|=number>>2;
+			number|=number>>4;
+			number|=number>>8;
+			number|=number>>16;
+			number++;
+		}
+        return number;
     },
 
     /**
@@ -118,12 +109,14 @@ var utils = module.exports = {
      */
     isPowerOfTwo: function (width, height)
     {
+		width|=0;
+		height|=0;
         return (width > 0 && (width & (width - 1)) === 0 && height > 0 && (height & (height - 1)) === 0);
     },
 
     /**
      * Logs out the version and renderer information for this running instance of PIXI.
-     * If you don't want to see this message you can set `PIXI.utils._saidHello = true;`
+     * If you don't want to see this message you can set `saidHello = true;`
      * so the library thinks it already said it. Keep in mind that doing that will forever
      * makes you a jerk face.
      *
@@ -133,12 +126,10 @@ var utils = module.exports = {
      */
     sayHello: function (type)
     {
-        if (utils._saidHello)
+        if (!saidHello)
         {
-            return;
-        }
-		console.log('Pixi.js ' + CONST.VERSION + ' - ' + type + ' - http://www.pixijs.com'); //jshint ignore:line
-
-        utils._saidHello = true;
+			console.log('Pixi.js ' + CONST.VERSION + ' - ' + type + ' - http://pixijs.com');
+			saidHello = true;
+		}
     },
 };

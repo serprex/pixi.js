@@ -41,9 +41,7 @@ var core = module.exports = {
     WebGLRenderer:          require('./renderers/webgl/WebGLRenderer'),
     ShaderManager:          require('./renderers/webgl/managers/ShaderManager'),
     Shader:                 require('./renderers/webgl/shaders/Shader'),
-
-    // filters - webgl
-    AbstractFilter:         require('./renderers/webgl/filters/AbstractFilter'),
+    TextureShader:         require('./renderers/webgl/shaders/TextureShader'),
 
     autoDetectRenderer:function(width, height, options){
 		return new (require('webgl-enabled')(options && options.view) ? core.WebGLRenderer : core.CanvasRenderer)(width, height, options);

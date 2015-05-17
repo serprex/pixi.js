@@ -77,20 +77,6 @@ Shader.prototype.cacheAttributeLocations = function (keys)
     {
         this.attributes[keys[i]] = this.gl.getAttribLocation(this.program, keys[i]);
     }
-
-    // TODO: Check if this is needed anymore...
-
-    // Begin worst hack eva //
-
-    // WHY??? ONLY on my chrome pixel the line above returns -1 when using filters?
-    // maybe its something to do with the current state of the gl context.
-    // I'm convinced this is a bug in the chrome browser as there is NO reason why this should be returning -1 especially as it only manifests on my chrome pixel
-    // If theres any webGL people that know why could happen please help :)
-    // if (this.attributes.aColor === -1){
-    //     this.attributes.aColor = 2;
-    // }
-
-    // End worst hack eva //
 };
 
 Shader.prototype.compile = function ()

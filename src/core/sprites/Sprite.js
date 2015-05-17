@@ -53,7 +53,7 @@ function Sprite(texture)
     /**
      * The shader that will be used to render the sprite. Set to null to remove a current shader.
      *
-     * @member {AbstractFilter}
+     * @member {Shader}
      */
     this.shader = null;
 

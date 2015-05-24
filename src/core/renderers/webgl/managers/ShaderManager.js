@@ -1,7 +1,6 @@
 var TextureShader = require('../shaders/TextureShader'),
     ComplexPrimitiveShader = require('../shaders/ComplexPrimitiveShader'),
-    PrimitiveShader = require('../shaders/PrimitiveShader'),
-    utils = require('../../../utils');
+    PrimitiveShader = require('../shaders/PrimitiveShader');
 
 /**
  * @class

@@ -1,7 +1,4 @@
-var math = require('../math'),
-    utils = require('../utils'),
-    RenderTexture = require('../textures/RenderTexture'),
-    _tempMatrix = new math.Matrix();
+var math = require('../math');
 
 /**
  * The base class for all objects that are rendered on the screen.
@@ -382,18 +379,4 @@ DisplayObject.prototype.renderWebGL = function (/* renderer */)
 DisplayObject.prototype.renderCanvas = function (/* renderer */)
 {
     // OVERWRITE;
-};
-
-DisplayObject.prototype.generateTexture = function (renderer, scaleMode)
-{
-    var bounds = this.getLocalBounds();
-
-    var renderTexture = new RenderTexture(renderer, bounds.width | 0, bounds.height | 0, renderer, scaleMode);
-
-    _tempMatrix.tx = -bounds.x;
-    _tempMatrix.ty = -bounds.y;
-
-    renderTexture.render(this, _tempMatrix);
-
-    return renderTexture;
 };

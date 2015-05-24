@@ -5,7 +5,6 @@ var SystemRenderer = require('../SystemRenderer'),
     BlendModeManager = require('./managers/BlendModeManager'),
     RenderTarget = require('./utils/RenderTarget'),
     ObjectRenderer = require('./utils/ObjectRenderer'),
-    utils = require('../../utils'),
     CONST = require('../../const');
 
 /**

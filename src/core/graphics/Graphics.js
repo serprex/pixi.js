@@ -1,8 +1,5 @@
 var Container = require('../display/Container'),
-    Texture = require('../textures/Texture'),
-    CanvasBuffer = require('../renderers/canvas/utils/CanvasBuffer'),
     CanvasGraphics = require('../renderers/canvas/utils/CanvasGraphics'),
-   // WebGLGraphics = require('../renderers/webgl/utils/WebGLGraphics'),
     GraphicsData = require('./GraphicsData'),
     math = require('../math'),
     CONST = require('../const');
@@ -548,28 +545,6 @@ Graphics.prototype.clear = function ()
     this.graphicsData.length = 0;
 
     return this;
-};
-
-/**
- * Useful function that returns a texture of the graphics object that can then be used to create sprites
- * This can be quite useful if your geometry is complicated and needs to be reused multiple times.
- *
- * @param scaleMode {number} Should be one of the scaleMode consts
- * @return {Texture} a texture of the graphics object
- */
-Graphics.prototype.generateTexture = function (scaleMode)
-{
-    var bounds = this.getBounds();
-
-    var canvasBuffer = new CanvasBuffer(bounds.width, bounds.height);
-
-    var texture = Texture.fromCanvas(canvasBuffer.canvas, scaleMode);
-
-    canvasBuffer.context.translate(-bounds.x,-bounds.y);
-
-    CanvasGraphics.renderGraphics(this, canvasBuffer.context);
-
-    return texture;
 };
 
 /**

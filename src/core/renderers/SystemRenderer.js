@@ -106,8 +106,6 @@ function SystemRenderer(system, width, height, options)
 SystemRenderer.prototype.constructor = SystemRenderer;
 module.exports = SystemRenderer;
 
-utils.eventTarget.mixin(SystemRenderer.prototype);
-
 /**
  * Resizes the canvas view to the specified width and height
  *

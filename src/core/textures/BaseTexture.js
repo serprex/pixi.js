@@ -5,7 +5,6 @@ var utils = require('../utils'),
  * A texture stores the information that represents an image. All textures have a base texture.
  *
  * @class
- * @mixes eventTarget
  * @namespace PIXI
  * @param source {Image|Canvas} the source object of the texture.
  * @param [scaleMode=scaleModes.DEFAULT] {number} See {@link scaleModes} for possible values

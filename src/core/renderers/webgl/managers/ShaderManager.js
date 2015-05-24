@@ -1,5 +1,4 @@
-var WebGLManager = require('./WebGLManager'),
-    TextureShader = require('../shaders/TextureShader'),
+var TextureShader = require('../shaders/TextureShader'),
     ComplexPrimitiveShader = require('../shaders/ComplexPrimitiveShader'),
     PrimitiveShader = require('../shaders/PrimitiveShader'),
     utils = require('../../../utils');
@@ -11,7 +10,7 @@ var WebGLManager = require('./WebGLManager'),
  */
 function ShaderManager(renderer)
 {
-    WebGLManager.call(this, renderer);
+	this.renderer = renderer;
 
     /**
      * @member {number}
@@ -53,10 +52,7 @@ function ShaderManager(renderer)
     this.initPlugins();
 }
 
-ShaderManager.prototype = Object.create(WebGLManager.prototype);
 ShaderManager.prototype.constructor = ShaderManager;
-utils.pluginTarget.mixin(ShaderManager);
-
 module.exports = ShaderManager;
 
 ShaderManager.prototype.onContextChange = function ()
@@ -136,11 +132,8 @@ ShaderManager.prototype.setShader = function (shader)
  */
 ShaderManager.prototype.destroy = function ()
 {
-    WebGLManager.prototype.destroy.call(this);
-
     this.destroyPlugins();
-
     this.attribState = null;
-
     this.tempAttribState = null;
+	this.renderer = null;
 };

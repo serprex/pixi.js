@@ -1,8 +1,4 @@
-
-var WebGLManager = require('../managers/WebGLManager');
-
 /**
- *
  * @class
  * @private
  * @namespace PIXI
@@ -10,11 +6,9 @@ var WebGLManager = require('../managers/WebGLManager');
  */
 function ObjectRenderer(renderer)
 {
-    WebGLManager.call(this, renderer);
+	this.renderer = renderer;
 }
 
-
-ObjectRenderer.prototype = Object.create(WebGLManager.prototype);
 ObjectRenderer.prototype.constructor = ObjectRenderer;
 module.exports = ObjectRenderer;
 

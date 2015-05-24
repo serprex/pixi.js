@@ -1,6 +1,5 @@
 var BaseTexture = require('./BaseTexture'),
     TextureUvs = require('./TextureUvs'),
-    eventTarget = require('../utils/eventTarget'),
     math = require('../math');
 
 /**
@@ -8,7 +7,6 @@ var BaseTexture = require('./BaseTexture'),
  * to the display list directly. Instead use it as the texture for a Sprite. If no frame is provided then the whole image is used.
  *
  * @class
- * @mixes eventTarget
  * @namespace PIXI
  * @param baseTexture {BaseTexture} The base texture source to create the texture from
  * @param [frame] {Rectangle} The rectangle frame of the texture to show
@@ -22,6 +20,11 @@ function Texture(baseTexture, frame, crop, trim)
         baseTexture = baseTexture.baseTexture;
     }
 
+	if (!frame)
+	{
+		frame = new math.Rectangle(0, 0, baseTexture.width, baseTexture.height);
+	}
+
     /**
      * The base texture that this texture uses.
      *
@@ -30,41 +33,11 @@ function Texture(baseTexture, frame, crop, trim)
     this.baseTexture = baseTexture;
 
     /**
-     * Does this Texture have any frame data assigned to it?
-     *
-     * @member {boolean}
-     */
-	this.frame = frame || new math.Rectangle(0, 0, baseTexture.width, baseTexture.height);
-
-    /**
-     * The frame specifies the region of the base texture that this texture uses
-     *
-     * @member {Rectangle}
-     * @private
-     */
-    this._frame = frame;
-
-    /**
-     * The texture trim data.
-     *
-     * @member {Rectangle}
-     */
-    this.trim = trim;
-
-    /**
      * This will let the renderer know if the texture is valid. If it's not then it cannot be rendered.
      *
      * @member {boolean}
      */
     this.valid = false;
-
-    /**
-     * The WebGL UV data cache.
-     *
-     * @member {object}
-     * @private
-     */
-    this._uvs = null;
 
     /**
      * The width of the Texture in pixels.
@@ -80,6 +53,29 @@ function Texture(baseTexture, frame, crop, trim)
      */
     this.height = 0;
 
+	/**
+     * The rotation value of the texture.
+     *
+     * @private
+     * @member {number}
+     */
+    this._rotation = 0;
+
+	/**
+     * The WebGL UV data cache.
+     *
+     * @member {object}
+     * @private
+     */
+    this._uvs = new TextureUvs();
+
+    /**
+     * The texture trim data.
+     *
+     * @member {Rectangle}
+     */
+    this.trim = trim;
+
     /**
      * This is the area of the BaseTexture image to actually copy to the Canvas / WebGL when rendering,
      * irrespective of the actual frame size or placement (which can be influenced by trimmed texture atlases)
@@ -89,18 +85,15 @@ function Texture(baseTexture, frame, crop, trim)
     this.crop = crop || frame;
 
     /**
-     * The rotation value of the texture.
+     * Does this Texture have any frame data assigned to it?
      *
-     * @private
-     * @member {number}
+     * @member {boolean}
      */
-    this._rotation = 0;
+	this.frame = frame;
 }
 
 Texture.prototype.constructor = Texture;
 module.exports = Texture;
-
-eventTarget.mixin(Texture.prototype);
 
 Object.defineProperties(Texture.prototype, {
     frame: {
@@ -127,10 +120,8 @@ Object.defineProperties(Texture.prototype, {
 
             if (this.trim)
             {
-                this.width = this.trim.width;
-                this.height = this.trim.height;
-                this._frame.width = this.trim.width;
-                this._frame.height = this.trim.height;
+                this.width = this._frame.width = this.trim.width;
+                this.height = this._frame.height = this.trim.height;
             }
 
             if (this.valid)

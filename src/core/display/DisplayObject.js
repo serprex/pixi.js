@@ -139,7 +139,6 @@ function DisplayObject()
 
 // constructor
 DisplayObject.prototype.constructor = DisplayObject;
-utils.eventTarget.mixin(DisplayObject.prototype);
 module.exports = DisplayObject;
 
 Object.defineProperties(DisplayObject.prototype, {

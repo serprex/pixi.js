@@ -1,5 +1,3 @@
-var WebGLManager = require('./WebGLManager');
-
 /**
  * @class
  * @namespace PIXI
@@ -7,7 +5,7 @@ var WebGLManager = require('./WebGLManager');
  */
 function BlendModeManager(renderer)
 {
-    WebGLManager.call(this, renderer);
+    this.renderer = renderer;
 
     /**
      * @member {number}
@@ -15,7 +13,6 @@ function BlendModeManager(renderer)
     this.currentBlendMode = 99999;
 }
 
-BlendModeManager.prototype = Object.create(WebGLManager.prototype);
 BlendModeManager.prototype.constructor = BlendModeManager;
 module.exports = BlendModeManager;
 

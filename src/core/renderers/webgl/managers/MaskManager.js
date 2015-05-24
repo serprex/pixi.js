@@ -1,5 +1,3 @@
-var WebGLManager = require('./WebGLManager');
-
 /**
  * @class
  * @namespace PIXI
@@ -7,14 +5,12 @@ var WebGLManager = require('./WebGLManager');
  */
 function MaskManager(renderer)
 {
-    WebGLManager.call(this, renderer);
-
+	this.renderer = renderer;
     this.stencilStack = [];
     this.reverse = true;
     this.count = 0;
 }
 
-MaskManager.prototype = Object.create(WebGLManager.prototype);
 MaskManager.prototype.constructor = MaskManager;
 module.exports = MaskManager;
 

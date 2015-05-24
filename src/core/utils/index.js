@@ -5,9 +5,6 @@ var CONST = require('../const');
  */
 var saidHello = false;
 module.exports = {
-    EventData:      require('./EventData'),
-    eventTarget:    require('./eventTarget'),
-    pluginTarget:   require('./pluginTarget'),
     PolyK:          require('./PolyK'),
 
     /**

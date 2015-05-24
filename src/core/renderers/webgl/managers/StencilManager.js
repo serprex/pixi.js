@@ -1,5 +1,4 @@
-var WebGLManager = require('./WebGLManager'),
-    utils = require('../../../utils');
+var utils = require('../../../utils');
 
 /**
  * @class
@@ -8,11 +7,10 @@ var WebGLManager = require('./WebGLManager'),
  */
 function WebGLMaskManager(renderer)
 {
-    WebGLManager.call(this, renderer);
+	this.renderer = renderer;
     this.stencilMaskStack = null;
 }
 
-WebGLMaskManager.prototype = Object.create(WebGLManager.prototype);
 WebGLMaskManager.prototype.constructor = WebGLMaskManager;
 module.exports = WebGLMaskManager;
 
@@ -291,9 +289,8 @@ WebGLMaskManager.prototype.popStencil = function (graphics, webGLData)
  */
 WebGLMaskManager.prototype.destroy = function ()
 {
-    WebGLManager.prototype.destroy.call(this);
-
     this.stencilMaskStack.stencilStack = null;
+	this.renderer = null;
 };
 
 /**

@@ -97,7 +97,6 @@ function WebGLRenderer(width, height, options)
 WebGLRenderer.prototype = Object.create(SystemRenderer.prototype);
 WebGLRenderer.prototype.constructor = WebGLRenderer;
 module.exports = WebGLRenderer;
-utils.pluginTarget.mixin(WebGLRenderer);
 
 /**
  *
@@ -120,8 +119,6 @@ WebGLRenderer.prototype._initContext = function ()
     gl.enable(gl.BLEND);
 
     this.renderTarget = new RenderTarget(this.gl, this.width, this.height, null, true);
-
-    this.emit('context', gl);
 
     // setup the width/height properties and gl viewport
     this.resize(this.width, this.height);

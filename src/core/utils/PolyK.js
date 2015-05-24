@@ -111,7 +111,7 @@ PolyK.Triangulate = function (p)
             }
             else
             {
-             //   window.console.log("PIXI Warning: shape too complex to fill");
+                console.log("PIXI Warning: shape too complex to fill");
                 return null;
             }
         }

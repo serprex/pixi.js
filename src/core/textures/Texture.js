@@ -17,25 +17,10 @@ var BaseTexture = require('./BaseTexture'),
  */
 function Texture(baseTexture, frame, crop, trim)
 {
-    /**
-     * Does this Texture have any frame data assigned to it?
-     *
-     * @member {boolean}
-     */
-    this.noFrame = false;
-
-    if (!frame)
-    {
-        this.noFrame = true;
-        frame = new math.Rectangle(0, 0, 1, 1);
-    }
-
-    if (baseTexture instanceof Texture)
+	if (baseTexture instanceof Texture)
     {
         baseTexture = baseTexture.baseTexture;
     }
-
-  //  console.log(frame);
 
     /**
      * The base texture that this texture uses.
@@ -43,6 +28,13 @@ function Texture(baseTexture, frame, crop, trim)
      * @member {BaseTexture}
      */
     this.baseTexture = baseTexture;
+
+    /**
+     * Does this Texture have any frame data assigned to it?
+     *
+     * @member {boolean}
+     */
+	this.frame = frame || new math.Rectangle(0, 0, baseTexture.width, baseTexture.height);
 
     /**
      * The frame specifies the region of the base texture that this texture uses
@@ -94,7 +86,7 @@ function Texture(baseTexture, frame, crop, trim)
      *
      * @member {Rectangle}
      */
-    this.crop = crop || frame;//new math.Rectangle(0, 0, 1, 1);
+    this.crop = crop || frame;
 
     /**
      * The rotation value of the texture.
@@ -103,19 +95,6 @@ function Texture(baseTexture, frame, crop, trim)
      * @member {number}
      */
     this._rotation = 0;
-
-    if (baseTexture.hasLoaded)
-    {
-        if (this.noFrame)
-        {
-            frame = new math.Rectangle(0, 0, baseTexture.width, baseTexture.height);
-        }
-        this.frame = frame;
-    }
-    else
-    {
-        baseTexture.on('loaded', this.onBaseTextureLoaded.bind(this));
-    }
 }
 
 Texture.prototype.constructor = Texture;
@@ -133,7 +112,6 @@ Object.defineProperties(Texture.prototype, {
         {
             this._frame = frame;
 
-            this.noFrame = false;
 
             this.width = frame.width;
             this.height = frame.height;
@@ -145,7 +123,7 @@ Object.defineProperties(Texture.prototype, {
                 throw new Error('Texture Error: frame does not fit inside the base Texture dimensions ' + this);
             }
 
-            this.valid = frame && frame.width && frame.height && this.baseTexture.hasLoaded;
+            this.valid = frame && frame.width && frame.height;
 
             if (this.trim)
             {
@@ -173,27 +151,6 @@ Object.defineProperties(Texture.prototype, {
         }
     }
 });
-
-/**
- * Called when the base texture is loaded
- *
- * @private
- */
-Texture.prototype.onBaseTextureLoaded = function ()
-{
-    var baseTexture = this.baseTexture;
-    baseTexture.off('loaded', this.onLoaded);
-
-    // TODO this code looks confusing.. boo to abusing getters and setterss!
-    if (this.noFrame)
-    {
-        this.frame = new math.Rectangle(0, 0, baseTexture.width, baseTexture.height);
-    }
-    else
-    {
-        this.frame = this._frame;
-    }
-};
 
 /**
  * Destroys this texture
@@ -241,4 +198,4 @@ Texture.prototype._updateUvs = function ()
     this._uvs.rotate(this.rotation);
 };
 
-Texture.emptyTexture = new Texture(new BaseTexture());
+Texture.emptyTexture = new Texture(new BaseTexture({width:0, height:0}));

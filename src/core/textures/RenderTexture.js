@@ -64,7 +64,6 @@ function RenderTexture(renderer, width, height, scaleMode)
     baseTexture.width = width;
     baseTexture.height = height;
     baseTexture.scaleMode = scaleMode || CONST.scaleModes.DEFAULT;
-    baseTexture.hasLoaded = true;
 
 
     Texture.call(this,

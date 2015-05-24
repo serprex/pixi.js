@@ -95,14 +95,14 @@ Shader.prototype.compile = function ()
     // if linking fails, then log and cleanup
     if (!gl.getProgramParameter(program, gl.LINK_STATUS))
     {
-        window.console.error('Pixi.js Error: Could not initialize shader.');
-        window.console.error('gl.VALIDATE_STATUS', gl.getProgramParameter(program, gl.VALIDATE_STATUS));
-        window.console.error('gl.getError()', gl.getError());
+        console.error('Pixi.js Error: Could not initialize shader.');
+        console.error('gl.VALIDATE_STATUS', gl.getProgramParameter(program, gl.VALIDATE_STATUS));
+        console.error('gl.getError', gl.getError());
 
         // if there is a program info log, log it
         if (gl.getProgramInfoLog(program) !== '')
         {
-            window.console.warn('Pixi.js Warning: gl.getProgramInfoLog()', gl.getProgramInfoLog(program));
+            console.warn('Pixi.js Warning: gl.getProgramInfoLog', gl.getProgramInfoLog(program));
         }
 
         gl.deleteProgram(program);
@@ -352,7 +352,7 @@ Shader.prototype.syncUniform = function (uniform)
         case 't':
         case 'sampler2D':
 
-            if (!uniform.value || !uniform.value.baseTexture.hasLoaded)
+            if (!uniform.value)
             {
                 break;
             }
@@ -379,7 +379,7 @@ Shader.prototype.syncUniform = function (uniform)
             break;
 
         default:
-            window.console.warn('Pixi.js Shader Warning: Unknown uniform type: ' + uniform.type);
+            console.warn('Pixi.js Shader Warning: Unknown uniform type: ' + uniform.type);
     }
 };
 
@@ -471,7 +471,7 @@ Shader.prototype._glCompile = function (type, src)
 
     if (!this.gl.getShaderParameter(shader, this.gl.COMPILE_STATUS))
     {
-        window.console.log(this.gl.getShaderInfoLog(shader));
+        console.log(this.gl.getShaderInfoLog(shader));
         return null;
     }
 

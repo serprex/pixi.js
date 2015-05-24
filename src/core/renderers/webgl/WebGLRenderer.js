@@ -36,9 +36,6 @@ function WebGLRenderer(width, height, options)
     this.handleContextLost = this.handleContextLost.bind(this);
     this.handleContextRestored = this.handleContextRestored.bind(this);
 
-    this._updateTextureBound = function(e){this.updateTexture(e.target);}.bind(this);
-    this._destroyTextureBound = function(e){this.destroyTexture(e.target);}.bind(this);
-
     this.view.addEventListener('webglcontextlost', this.handleContextLost, false);
     this.view.addEventListener('webglcontextrestored', this.handleContextRestored, false);
 
@@ -228,7 +225,7 @@ WebGLRenderer.prototype.updateTexture = function (texture)
 {
     texture = texture.baseTexture || texture;
 
-    if (!texture.hasLoaded || !texture.source)
+    if (!texture.source)
     {
         return;
     }
@@ -238,7 +235,6 @@ WebGLRenderer.prototype.updateTexture = function (texture)
     if (!texture._glTexture)
     {
         texture._glTexture = gl.createTexture();
-        texture.on('dispose', this._destroyTextureBound);
     }
 
 
@@ -267,22 +263,6 @@ WebGLRenderer.prototype.updateTexture = function (texture)
 	texture.source = null;
 
     return texture._glTexture;
-};
-
-WebGLRenderer.prototype.destroyTexture = function (texture)
-{
-    texture = texture.baseTexture || texture;
-
-    if (!texture.hasLoaded)
-    {
-        return;
-    }
-
-    if (texture._glTexture)
-    {
-        this.gl.deleteTexture(texture._glTexture);
-		delete texture._glTexture;
-    }
 };
 
 /**

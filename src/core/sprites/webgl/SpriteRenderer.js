@@ -1,5 +1,5 @@
-var ObjectRenderer = require('../../renderers/webgl/utils/ObjectRenderer'),
-    WebGLRenderer = require('../../renderers/webgl/WebGLRenderer'),
+var core = require("../../index"),
+	ObjectRenderer = require('../../renderers/webgl/utils/ObjectRenderer'),
     CONST = require('../../const');
 
 /**
@@ -144,13 +144,12 @@ function SpriteRenderer(renderer)
      */
     this.shader = null;
 
+	this.onContextChange();
 }
 
 SpriteRenderer.prototype = Object.create(ObjectRenderer.prototype);
 SpriteRenderer.prototype.constructor = SpriteRenderer;
 module.exports = SpriteRenderer;
-
-WebGLRenderer.registerPlugin('sprite', SpriteRenderer);
 
 /**
  * Sets up the renderer context and necessary buffers.
@@ -160,7 +159,7 @@ WebGLRenderer.registerPlugin('sprite', SpriteRenderer);
  */
 SpriteRenderer.prototype.onContextChange = function ()
 {
-    var gl = this.renderer.gl;
+    var gl = core.gl;
 
     // setup default shader
     this.shader = this.renderer.shaderManager.defaultShader;
@@ -300,7 +299,7 @@ SpriteRenderer.prototype.flush = function ()
         return;
     }
 
-    var gl = this.renderer.gl;
+    var gl = core.gl;
     var shader;
 
     // upload the verts to the buffer
@@ -393,7 +392,7 @@ SpriteRenderer.prototype.renderBatch = function (texture, size, startIndex)
         return;
     }
 
-    var gl = this.renderer.gl;
+    var gl = core.gl;
 
     if (!texture._glTexture)
     {
@@ -415,7 +414,7 @@ SpriteRenderer.prototype.renderBatch = function (texture, size, startIndex)
  */
 SpriteRenderer.prototype.start = function ()
 {
-    var gl = this.renderer.gl;
+    var gl = core.gl;
 
     // bind the main texture
     gl.activeTexture(gl.TEXTURE0);
@@ -439,8 +438,8 @@ SpriteRenderer.prototype.start = function ()
  */
 SpriteRenderer.prototype.destroy = function ()
 {
-    this.renderer.gl.deleteBuffer(this.vertexBuffer);
-    this.renderer.gl.deleteBuffer(this.indexBuffer);
+    core.gl.deleteBuffer(this.vertexBuffer);
+    core.gl.deleteBuffer(this.indexBuffer);
 
     this.shader.destroy();
 

@@ -1,7 +1,7 @@
 var Container = require('../display/Container'),
     CanvasGraphics = require('../renderers/canvas/utils/CanvasGraphics'),
     GraphicsData = require('./GraphicsData'),
-    math = require('../math'),
+    math = require('../math/index'),
     CONST = require('../const');
 
 /**
@@ -566,8 +566,8 @@ Graphics.prototype._renderWebGL = function (renderer)
         this.glDirty = false;
     }
 
-    renderer.setObjectRenderer(renderer.plugins.graphics);
-    renderer.plugins.graphics.render(this);
+    renderer.setObjectRenderer(renderer.GraphicsRenderer);
+    renderer.GraphicsRenderer.render(this);
 
 };
 

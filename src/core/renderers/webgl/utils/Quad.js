@@ -1,13 +1,11 @@
+var core = require("../../../index");
 /**
  * @class
  * @namespace PIXI
- * @param gl {WebGLRenderingContext} The gl context for this quad to use.
  */
-function Quad(gl)
+function Quad()
 {
-    this.gl = gl;
-
-//    this.textures = new TextureUvs();
+	var gl = core.gl;
 
     this.vertices = new Float32Array([
         0,0,
@@ -88,14 +86,10 @@ Quad.prototype.map = function(rect, rect2)
 
 Quad.prototype.upload = function()
 {
-    var gl = this.gl;
-
-    gl.bindBuffer( gl.ARRAY_BUFFER, this.vertexBuffer );
-
+    var gl = core.gl;
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
     gl.bufferSubData(gl.ARRAY_BUFFER, 0, this.vertices);
-
     gl.bufferSubData(gl.ARRAY_BUFFER, 8 * 4, this.uvs);
-
     gl.bufferSubData(gl.ARRAY_BUFFER, (8 + 8) * 4, this.colors);
 };
 

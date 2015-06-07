@@ -1,4 +1,4 @@
-var math = require('../math'),
+var math = require('../math/index'),
     Texture = require('../textures/Texture'),
     Container = require('../display/Container'),
     CanvasTinter = require('../renderers/canvas/utils/CanvasTinter'),
@@ -144,8 +144,8 @@ Object.defineProperties(Sprite.prototype, {
 
 Sprite.prototype._renderWebGL = function (renderer)
 {
-    renderer.setObjectRenderer(renderer.plugins.sprite);
-    renderer.plugins.sprite.render(this);
+    renderer.setObjectRenderer(renderer.SpriteRenderer);
+    renderer.SpriteRenderer.render(this);
 };
 
 /**

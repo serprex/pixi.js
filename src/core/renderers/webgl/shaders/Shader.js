@@ -1,4 +1,5 @@
-var utils = require('../../../utils'),
+var core = require("../../../index"),
+    utils = require('../../../utils/index'),
     CONST = require('../../../const');
 
 /**
@@ -16,12 +17,6 @@ function Shader(shaderManager, vertexSrc, fragmentSrc, uniforms, attributes)
     {
          throw new Error('Pixi.js Error. Shader requires vertexSrc and fragmentSrc');
     }
-
-    /**
-     * @member {WebGLContext}
-     * @readonly
-     */
-    this.gl = shaderManager.renderer.gl;
 
     /**
      * The WebGL program.
@@ -57,7 +52,7 @@ Shader.prototype.init = function ()
 {
     this.compile();
 
-    this.gl.useProgram(this.program);
+    core.gl.useProgram(this.program);
 
     this.cacheUniformLocations(Object.keys(this.uniforms));
     this.cacheAttributeLocations(Object.keys(this.attributes));
@@ -67,7 +62,7 @@ Shader.prototype.cacheUniformLocations = function (keys)
 {
     for (var i = 0; i < keys.length; ++i)
     {
-        this.uniforms[keys[i]]._location = this.gl.getUniformLocation(this.program, keys[i]);
+        this.uniforms[keys[i]]._location = core.gl.getUniformLocation(this.program, keys[i]);
     }
 };
 
@@ -75,13 +70,13 @@ Shader.prototype.cacheAttributeLocations = function (keys)
 {
     for (var i = 0; i < keys.length; ++i)
     {
-        this.attributes[keys[i]] = this.gl.getAttribLocation(this.program, keys[i]);
+        this.attributes[keys[i]] = core.gl.getAttribLocation(this.program, keys[i]);
     }
 };
 
 Shader.prototype.compile = function ()
 {
-    var gl = this.gl;
+    var gl = core.gl;
 
     var glVertShader = this._glCompile(gl.VERTEX_SHADER, this.vertexSrc);
     var glFragShader = this._glCompile(gl.FRAGMENT_SHADER, this.fragmentSrc);
@@ -156,7 +151,7 @@ Shader.prototype.syncUniform = function (uniform)
 {
     var location = uniform._location,
         value = uniform.value,
-        gl = this.gl,
+        gl = core.gl,
         i, il;
 
     switch (uniform.type)
@@ -400,7 +395,7 @@ Shader.prototype.syncUniforms = function ()
  */
 Shader.prototype.initSampler2D = function (uniform)
 {
-    var gl = this.gl;
+    var gl = core.gl;
 
     var texture = uniform.value.baseTexture;
 
@@ -452,9 +447,8 @@ Shader.prototype.initSampler2D = function (uniform)
  */
 Shader.prototype.destroy = function ()
 {
-    this.gl.deleteProgram(this.program);
+    core.gl.deleteProgram(this.program);
 
-    this.gl = null;
     this.uniforms = null;
     this.attributes = null;
 
@@ -464,14 +458,14 @@ Shader.prototype.destroy = function ()
 
 Shader.prototype._glCompile = function (type, src)
 {
-    var shader = this.gl.createShader(type);
+	var gl = core.gl, shader = gl.createShader(type);
 
-    this.gl.shaderSource(shader, src);
-    this.gl.compileShader(shader);
+    gl.shaderSource(shader, src);
+    gl.compileShader(shader);
 
-    if (!this.gl.getShaderParameter(shader, this.gl.COMPILE_STATUS))
+    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS))
     {
-        console.log(this.gl.getShaderInfoLog(shader));
+        console.log(gl.getShaderInfoLog(shader));
         return null;
     }
 

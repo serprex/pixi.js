@@ -1,4 +1,5 @@
-var utils = require('../utils'),
+var core = require("../"),
+    utils = require('../utils/index'),
     CONST = require('../const');
 
 /**
@@ -12,12 +13,20 @@ var utils = require('../utils'),
 function BaseTexture(source, scaleMode)
 {
     /**
+     * The image source that is used to create the texture.
+     *
+     * @member {Image|Canvas}
+     * @readonly
+     */
+    this.source = source;
+
+    /**
      * The width of the base texture set when the image has loaded
      *
      * @member {number}
      * @readOnly
      */
-    this.width = this.source.naturalWidth || this.source.width;
+    this.width = source ? source.naturalWidth || source.width : 0;
 
     /**
      * The height of the base texture set when the image has loaded
@@ -25,7 +34,7 @@ function BaseTexture(source, scaleMode)
      * @member {number}
      * @readOnly
      */
-    this.height = this.source.naturalHeight || this.source.height;
+    this.height = source ? source.naturalHeight || source.height : 0;
 
     /**
      * The scale mode to apply when scaling this texture
@@ -34,14 +43,6 @@ function BaseTexture(source, scaleMode)
      * @default scaleModes.LINEAR
      */
     this.scaleMode = scaleMode || CONST.scaleModes.DEFAULT;
-
-    /**
-     * The image source that is used to create the texture.
-     *
-     * @member {Image|Canvas}
-     * @readonly
-     */
-    this.source = source;
 
     /**
      * Controls if RGB channels should be pre-multiplied by Alpha  (WebGL only)
@@ -84,11 +85,11 @@ module.exports = BaseTexture;
  * Destroys this base texture
  *
  */
-BaseTexture.prototype.destroy = function (renderer)
+BaseTexture.prototype.destroy = function ()
 {
     this.source = null;
-	if (renderer && renderer.gl && this._glTexture) {
-		renderer.gl.deleteTexture(this._glTexture);
+	if (core.gl && this._glTexture) {
+		core.gl.deleteTexture(this._glTexture);
 		this._glTexture = null;
 	}
 };

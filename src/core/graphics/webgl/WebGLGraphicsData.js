@@ -1,19 +1,19 @@
+var core = require("../../index");
 /**
  * @class
  * @private
  */
-function WebGLGraphicsData(gl) {
-    this.gl = gl;
-
-    //TODO does this need to be split before uploding??
-    this.color = [0,0,0]; // color split!
+function WebGLGraphicsData() {
+    this.color = new Float32Array(3);
     this.points = [];
     this.indices = [];
-    this.buffer = gl.createBuffer();
-    this.indexBuffer = gl.createBuffer();
+    this.buffer = core.gl.createBuffer();
+    this.indexBuffer = core.gl.createBuffer();
     this.mode = 1;
     this.alpha = 1;
     this.dirty = true;
+	this.glPoints = null;
+	this.glIndicies = null;
 }
 
 WebGLGraphicsData.prototype.constructor = WebGLGraphicsData;
@@ -23,15 +23,15 @@ module.exports = WebGLGraphicsData;
  *
  */
 WebGLGraphicsData.prototype.reset = function () {
-    this.points = [];
-    this.indices = [];
+    this.points.length = 0;
+    this.indices.length = 0;
 };
 
 /**
  *
  */
 WebGLGraphicsData.prototype.upload = function () {
-    var gl = this.gl;
+    var gl = core.gl;
 
 //    this.lastIndex = graphics.graphicsData.length;
     this.glPoints = new Float32Array(this.points);

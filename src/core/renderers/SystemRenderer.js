@@ -1,5 +1,5 @@
-var utils = require('../utils'),
-    math = require('../math'),
+var utils = require('../utils/index'),
+    math = require('../math/index'),
     CONST = require('../const');
 
 /**

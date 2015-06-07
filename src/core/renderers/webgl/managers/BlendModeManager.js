@@ -1,3 +1,4 @@
+var core = require("../../../index");
 /**
  * @class
  * @namespace PIXI
@@ -31,7 +32,7 @@ BlendModeManager.prototype.setBlendMode = function (blendMode)
     this.currentBlendMode = blendMode;
 
     var mode = this.renderer.blendModes[this.currentBlendMode];
-    this.renderer.gl.blendFunc(mode[0], mode[1]);
+    core.gl.blendFunc(mode[0], mode[1]);
 
     return true;
 };

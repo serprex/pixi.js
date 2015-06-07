@@ -8,45 +8,41 @@
 /**
  * @namespace PIXI
  */
-var core = module.exports = {
-    CONST: require('./const'),
+exports.CONST = require('./const');
 
-    // utils
-    utils: require('./utils'),
-    math:  require('./math'),
+// utils
+exports.utils = require('./utils/index');
+exports.math = require('./math/index');
 
-    // display
-    Container:              require('./display/Container'),
+// display
+exports.Container = require('./display/Container');
 
-	// sprites
-    Sprite:                 require('./sprites/Sprite'),
-    SpriteRenderer:         require('./sprites/webgl/SpriteRenderer'),
+// sprites
+exports.Sprite=                require('./sprites/Sprite');
+exports.SpriteRenderer=        require('./sprites/webgl/SpriteRenderer');
 
-    // primitives
-    Graphics:               require('./graphics/Graphics'),
-    GraphicsData:           require('./graphics/GraphicsData'),
-    GraphicsRenderer:       require('./graphics/webgl/GraphicsRenderer'),
+// primitives
+exports.Graphics=              require('./graphics/Graphics');
+exports.GraphicsData=          require('./graphics/GraphicsData');
+exports.GraphicsRenderer=      require('./graphics/webgl/GraphicsRenderer');
 
-    // textures
-    Texture:                require('./textures/Texture'),
-    BaseTexture:            require('./textures/BaseTexture'),
-    RenderTexture:          require('./textures/RenderTexture'),
+// textures
+exports.Texture=               require('./textures/Texture');
+exports.BaseTexture=           require('./textures/BaseTexture');
+exports.RenderTexture=         require('./textures/RenderTexture');
 
-    // renderers - canvas
-    CanvasRenderer:         require('./renderers/canvas/CanvasRenderer'),
-    CanvasGraphics:         require('./renderers/canvas/utils/CanvasGraphics'),
-    CanvasBuffer:           require('./renderers/canvas/utils/CanvasBuffer'),
+// renderers - canvas
+exports.CanvasRenderer=        require('./renderers/canvas/CanvasRenderer');
+exports.CanvasGraphics=        require('./renderers/canvas/utils/CanvasGraphics');
+exports.CanvasBuffer=          require('./renderers/canvas/utils/CanvasBuffer');
 
-    // renderers - webgl
-    WebGLRenderer:          require('./renderers/webgl/WebGLRenderer'),
-    ShaderManager:          require('./renderers/webgl/managers/ShaderManager'),
-    Shader:                 require('./renderers/webgl/shaders/Shader'),
-    TextureShader:         require('./renderers/webgl/shaders/TextureShader'),
+// renderers - webgl
+exports.WebGLRenderer=         require('./renderers/webgl/WebGLRenderer');
+exports.ShaderManager=         require('./renderers/webgl/managers/ShaderManager');
+exports.Shader=                require('./renderers/webgl/shaders/Shader');
+exports.TextureShader=         require('./renderers/webgl/shaders/TextureShader');
+exports.gl = null;
 
-    autoDetectRenderer:function(width, height, options){
-		return new (require('webgl-enabled')(options && options.view) ? core.WebGLRenderer : core.CanvasRenderer)(width, height, options);
-	},
-};
-
-
-
+exports.autoDetectRenderer = function(width, height, options){
+	return new (options.view.getContext("webgl") ? exports.WebGLRenderer : exports.CanvasRenderer)(width, height, options);
+}

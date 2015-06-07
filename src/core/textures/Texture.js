@@ -1,6 +1,6 @@
 var BaseTexture = require('./BaseTexture'),
     TextureUvs = require('./TextureUvs'),
-    math = require('../math');
+    math = require('../math/index');
 
 /**
  * A texture stores the information that represents an image or part of an image. It cannot be added
@@ -189,4 +189,4 @@ Texture.prototype._updateUvs = function ()
     this._uvs.rotate(this.rotation);
 };
 
-Texture.emptyTexture = new Texture(new BaseTexture({width:0, height:0}));
+Texture.emptyTexture = new Texture(new BaseTexture());

@@ -1,4 +1,4 @@
-var math = require('../math');
+var math = require('../math/index');
 
 /**
  * The base class for all objects that are rendered on the screen.

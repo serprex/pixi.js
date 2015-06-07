@@ -1,8 +1,9 @@
-var BaseTexture = require('./BaseTexture'),
+var core = require("../index"),
+	BaseTexture = require('./BaseTexture'),
     Texture = require('./Texture'),
     RenderTarget = require('../renderers/webgl/utils/RenderTarget'),
     CanvasBuffer = require('../renderers/canvas/utils/CanvasBuffer'),
-    math = require('../math'),
+    math = require('../math/index'),
     CONST = require('../const');
 
 /**
@@ -110,9 +111,7 @@ function RenderTexture(renderer, width, height, scaleMode)
 
     if (this.renderer.type === CONST.RENDERER_TYPE.WEBGL)
     {
-        var gl = this.renderer.gl;
-
-        this.renderTarget = new RenderTarget(gl, this.width, this.height);
+        this.renderTarget = new RenderTarget(this.width, this.height);
         this.baseTexture._glTexture = this.renderTarget.texture;
     }
     else
@@ -261,7 +260,7 @@ RenderTexture.prototype.getCanvas = function ()
 {
     if (this.renderer.type === CONST.RENDERER_TYPE.WEBGL)
     {
-        var gl = this.renderer.gl;
+        var gl = core.gl;
         var width = this.renderTarget.width;
         var height = this.renderTarget.height;
 

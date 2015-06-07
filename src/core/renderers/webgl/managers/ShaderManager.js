@@ -1,4 +1,5 @@
-var TextureShader = require('../shaders/TextureShader'),
+var core = require("../../../index"),
+    TextureShader = require('../shaders/TextureShader'),
     ComplexPrimitiveShader = require('../shaders/ComplexPrimitiveShader'),
     PrimitiveShader = require('../shaders/PrimitiveShader');
 
@@ -48,7 +49,8 @@ function ShaderManager(renderer)
      */
     this.currentShader = null;
 
-    this.initPlugins();
+	this.onContextChange();
+
 }
 
 ShaderManager.prototype.constructor = ShaderManager;
@@ -56,9 +58,6 @@ module.exports = ShaderManager;
 
 ShaderManager.prototype.onContextChange = function ()
 {
-    this.initPlugins();
-
-    // TODO - Why are these not plugins? We can't decouple primitives unless they are....
     this.defaultShader = new TextureShader(this);
     this.primitiveShader = new PrimitiveShader(this);
     this.complexPrimitiveShader = new ComplexPrimitiveShader(this);
@@ -85,7 +84,7 @@ ShaderManager.prototype.setAttribs = function (attribs)
         this.tempAttribState[attribs[a]] = true;
     }
 
-    var gl = this.renderer.gl;
+    var gl = core.gl;
 
     for (i = 0; i < this.attribState.length; i++)
     {
@@ -119,7 +118,7 @@ ShaderManager.prototype.setShader = function (shader)
 
     this.currentShader = shader;
 
-    this.renderer.gl.useProgram(shader.program);
+    core.gl.useProgram(shader.program);
     this.setAttribs(shader.attributes);
 
     return true;
@@ -131,7 +130,9 @@ ShaderManager.prototype.setShader = function (shader)
  */
 ShaderManager.prototype.destroy = function ()
 {
-    this.destroyPlugins();
+    this.defaultShader.destroy();
+    this.primitiveShader.destroy();
+    this.complexPrimitiveShader.destroy();
     this.attribState = null;
     this.tempAttribState = null;
 	this.renderer = null;

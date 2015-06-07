@@ -1,6 +1,6 @@
-var math = require('../../../math'),
+var core = require("../../../index"),
+    math = require('../../../math/index'),
     CONST = require('../../../const'),
-    //StencilManager = require('../managers/StencilManager'),
     StencilMaskStack = require('./StencilMaskStack');
 
 /**
@@ -15,13 +15,9 @@ var math = require('../../../math'),
 * @param height {Number} the vertical range of the filter
 * @param scaleMode {Number} See {{#crossLink "PIXI/scaleModes:property"}}PIXI.scaleModes{{/crossLink}} for possible values
 */
-var RenderTarget = function(gl, width, height, scaleMode, root, createStencilBuffer)
+var RenderTarget = function(width, height, scaleMode, root, createStencilBuffer)
 {
-    /**
-     * @property gl
-     * @type WebGLContext
-     */
-    this.gl = gl;
+    var gl = core.gl;
 
     // next time to create a frame buffer and texture
 
@@ -99,7 +95,7 @@ module.exports = RenderTarget;
 */
 RenderTarget.prototype.clear = function()
 {
-    var gl = this.gl;
+    var gl = core.gl;
     gl.bindFramebuffer(gl.FRAMEBUFFER, this.frameBuffer);
     gl.clear(gl.COLOR_BUFFER_BIT);
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
@@ -119,7 +115,7 @@ RenderTarget.prototype.attachStenilBuffer = function()
      */
     if (!this.root)
     {
-        var gl = this.gl;
+        var gl = core.gl;
 
         this.stencilBuffer = gl.createRenderbuffer();
         gl.bindRenderbuffer(gl.RENDERBUFFER, this.stencilBuffer);
@@ -131,7 +127,7 @@ RenderTarget.prototype.attachStenilBuffer = function()
 RenderTarget.prototype.activate = function()
 {
     //TOOD refactor usage of frame..
-    var gl = this.gl;
+    var gl = core.gl;
 
     gl.bindFramebuffer(gl.FRAMEBUFFER, this.frameBuffer);
 
@@ -189,7 +185,7 @@ RenderTarget.prototype.resize = function(width, height)
 
     if (!this.root)
     {
-        var gl = this.gl;
+        var gl = core.gl;
 
         gl.bindTexture(gl.TEXTURE_2D, this.texture);
 
@@ -215,7 +211,7 @@ RenderTarget.prototype.resize = function(width, height)
 */
 RenderTarget.prototype.destroy = function()
 {
-    var gl = this.gl;
+    var gl = core.gl;
     gl.deleteFramebuffer( this.frameBuffer );
     gl.deleteTexture( this.texture );
 

@@ -1,10 +1,13 @@
-var SystemRenderer = require('../SystemRenderer'),
+var core = require("../../index"),
+    SystemRenderer = require('../SystemRenderer'),
     ShaderManager = require('./managers/ShaderManager'),
     MaskManager = require('./managers/MaskManager'),
     StencilManager = require('./managers/StencilManager'),
     BlendModeManager = require('./managers/BlendModeManager'),
     RenderTarget = require('./utils/RenderTarget'),
     ObjectRenderer = require('./utils/ObjectRenderer'),
+	GraphicsRenderer = require("../../graphics/webgl/GraphicsRenderer"),
+	SpriteRenderer = require("../../sprites/webgl/SpriteRenderer"),
     CONST = require('../../const');
 
 /**
@@ -51,6 +54,9 @@ function WebGLRenderer(width, height, options)
         preserveDrawingBuffer: options.preserveDrawingBuffer
     };
 
+     // initialize the context so it is ready for the managers.
+    this._initContext();
+
     /**
      * Deals with managing the shader programs and their attribs.
      *
@@ -83,10 +89,8 @@ function WebGLRenderer(width, height, options)
 
     this.currentRenderer = new ObjectRenderer(this);
 
-    this.initPlugins();
-
-     // initialize the context so it is ready for the managers.
-    this._initContext();
+	this.GraphicsRenderer = new GraphicsRenderer(this);
+	this.SpriteRenderer = new SpriteRenderer(this);
 
     // map some webGL blend modes..
     this._mapBlendModes();
@@ -104,7 +108,7 @@ module.exports = WebGLRenderer;
 WebGLRenderer.prototype._initContext = function ()
 {
     var gl = this.view.getContext('webgl', this._contextOptions) || this.view.getContext('experimental-webgl', this._contextOptions);
-    this.gl = gl;
+    core.gl = gl;
 
     if (!gl)
     {
@@ -117,7 +121,7 @@ WebGLRenderer.prototype._initContext = function ()
     gl.disable(gl.CULL_FACE);
     gl.enable(gl.BLEND);
 
-    this.renderTarget = new RenderTarget(this.gl, this.width, this.height, null, true);
+    this.renderTarget = new RenderTarget(this.width, this.height, null, true);
 
     // setup the width/height properties and gl viewport
     this.resize(this.width, this.height);
@@ -130,7 +134,7 @@ WebGLRenderer.prototype._initContext = function ()
  */
 WebGLRenderer.prototype.render = function (object)
 {
-    var gl = this.gl;
+    var gl = core.gl;
     // no point rendering if our context has been blown up!
     if (gl.isContextLost())
     {
@@ -207,7 +211,7 @@ WebGLRenderer.prototype.resize = function (width, height)
 {
     SystemRenderer.prototype.resize.call(this, width, height);
 
-    this.gl.viewport(0, 0, this.width, this.height);
+    core.gl.viewport(0, 0, this.width, this.height);
 
     this.renderTarget.resize(width, height);
 };
@@ -226,7 +230,7 @@ WebGLRenderer.prototype.updateTexture = function (texture)
         return;
     }
 
-    var gl = this.gl;
+    var gl = core.gl;
 
     if (!texture._glTexture)
     {
@@ -290,7 +294,8 @@ WebGLRenderer.prototype.handleContextRestored = function ()
  */
 WebGLRenderer.prototype.destroy = function (removeView)
 {
-    this.destroyPlugins();
+	this.GraphicsRenderer.destroy();
+	this.SpriteRenderer.destroy();
 
     // remove listeners
     this.view.removeEventListener('webglcontextlost', this.handleContextLost);
@@ -312,8 +317,6 @@ WebGLRenderer.prototype.destroy = function (removeView)
     this.handleContextRestored = null;
 
     this._contextOptions = null;
-
-    this.gl = null;
 };
 
 /**
@@ -323,7 +326,7 @@ WebGLRenderer.prototype.destroy = function (removeView)
  */
 WebGLRenderer.prototype._mapBlendModes = function ()
 {
-    var gl = this.gl;
+    var gl = core.gl;
 
     if (!this.blendModes)
     {

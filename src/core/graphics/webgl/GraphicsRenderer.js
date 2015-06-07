@@ -1,8 +1,8 @@
-var utils = require('../../utils'),
-    math = require('../../math'),
+var core = require("../../index"),
+	utils = require('../../utils/index'),
+    math = require('../../math/index'),
     CONST = require('../../const'),
     ObjectRenderer = require('../../renderers/webgl/utils/ObjectRenderer'),
-    WebGLRenderer = require('../../renderers/webgl/WebGLRenderer'),
     WebGLGraphicsData = require('./WebGLGraphicsData');
 
 /**
@@ -27,13 +27,6 @@ GraphicsRenderer.prototype = Object.create(ObjectRenderer.prototype);
 GraphicsRenderer.prototype.constructor = GraphicsRenderer;
 module.exports = GraphicsRenderer;
 
-WebGLRenderer.registerPlugin('graphics', GraphicsRenderer);
-
-GraphicsRenderer.prototype.onContextChange = function()
-{
-
-};
-
 /**
  * Destroys this renderer.
  *
@@ -52,14 +45,14 @@ GraphicsRenderer.prototype.destroy = function () {
 GraphicsRenderer.prototype.render = function(graphics)
 {
     var renderer = this.renderer;
-    var gl = renderer.gl;
+    var gl = core.gl;
 
-    var shader = renderer.shaderManager.plugins.primitiveShader,
+    var shader = renderer.shaderManager.primitiveShader,
         webGLData;
 
     if (graphics.dirty)
     {
-        this.updateGraphics(graphics, gl);
+        this.updateGraphics(graphics);
     }
 
     var webGL = graphics._webGL;
@@ -124,7 +117,7 @@ GraphicsRenderer.prototype.render = function(graphics)
  */
 GraphicsRenderer.prototype.updateGraphics = function(graphics)
 {
-    var gl = this.renderer.gl, webGL = graphics._webGL, i;
+    var gl = core.gl, webGL = graphics._webGL, i;
 
     // if the graphics object does not exist in the webGL context time to create it!
     if (!webGL)
@@ -135,7 +128,7 @@ GraphicsRenderer.prototype.updateGraphics = function(graphics)
     {
         graphics.clearDirty = false;
 
-        // lop through and return all the webGLDatas to the object pool so than can be reused later on
+        // loop through and return all the webGLDatas to the object pool so they can be reused later on
         for (i = 0; i < webGL.data.length; i++)
         {
             var graphicsData = webGL.data[i];
@@ -243,7 +236,7 @@ GraphicsRenderer.prototype.switchMode = function (webGL, type)
 
     if (!webGL.data.length)
     {
-        webGLData = this.graphicsDataPool.pop() || new WebGLGraphicsData(webGL.gl);
+        webGLData = this.graphicsDataPool.pop() || new WebGLGraphicsData();
         webGLData.mode = type;
         webGL.data.push(webGLData);
     }
@@ -253,7 +246,7 @@ GraphicsRenderer.prototype.switchMode = function (webGL, type)
 
         if (webGLData.mode !== type || type === 1)
         {
-            webGLData = this.graphicsDataPool.pop() || new WebGLGraphicsData(webGL.gl);
+            webGLData = this.graphicsDataPool.pop() || new WebGLGraphicsData();
             webGLData.mode = type;
             webGL.data.push(webGLData);
         }
@@ -613,7 +606,7 @@ GraphicsRenderer.prototype.buildComplexPoly = function (graphicsData, webGLData)
     var indices = webGLData.indices;
     webGLData.points = points;
     webGLData.alpha = graphicsData.fillAlpha;
-    webGLData.color = utils.hex2rgb(graphicsData.fillColor);
+    utils.hex2rgb(graphicsData.fillColor, webGLData.color);
 
     // calclate the bounds..
     var minX = Infinity;

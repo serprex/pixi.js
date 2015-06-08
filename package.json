@@ -1,5 +1,5 @@
 {
-  "name": "pixi.js",
+  "name": "pixi-oetg",
   "version": "3.0.0",
   "description": "Pixi.js is a fast lightweight 2D library that works across all devices.",
   "author": "Mat Groves",
@@ -8,48 +8,11 @@
     "Richard Davey <rdavey@gmail.com>"
   ],
   "main": "./src/index.js",
-  "homepage": "http://goodboydigital.com/",
-  "bugs": "https://github.com/GoodBoyDigital/pixi.js/issues",
+  "homepage": "http://goodboydigital.com",
+  "bugs": "https://github.com/serprex/pixi.js/issues",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/GoodBoyDigital/pixi.js.git"
-  },
-  "scripts": {
-    "test": "gulp test",
-    "docs": "./node_modules/.bin/jsdoc -c ./gulp/util/jsdoc.conf.json"
-  },
-  "devDependencies": {
-    "brfs": "^1.2.0",
-    "browserify": "^9.0.8",
-    "chai": "^2.3.0",
-    "del": "^1.2.0",
-    "gulp": "^3.9.0",
-    "gulp-cached": "^1.1.0",
-    "gulp-jshint": "^1.11.0",
-    "gulp-plumber": "^0.6.6",
-    "gulp-rename": "^1.2.0",
-    "gulp-uglify": "^1.0.2",
-    "gulp-util": "^3.0.5",
-    "ink-docstrap": "^0.5.2",
-    "jsdoc": "^3.3.0",
-    "jshint-summary": "^0.4.0",
-    "karma": "^0.12.36",
-    "karma-firefox-launcher": "^0.1.6",
-    "karma-mocha": "^0.1.10",
-    "karma-spec-reporter": "^0.0.16",
-    "minimist": "^1.1.1",
-    "mocha": "^2.2.5",
-    "require-dir": "^0.1.0",
-    "run-sequence": "^1.1.0",
-    "vinyl-buffer": "^1.0.0",
-    "vinyl-source-stream": "^1.1.0",
-    "watchify": "^2.2.1"
-  },
-  "dependencies": {},
-  "browserify": {
-    "transform": [
-      "brfs"
-    ]
+    "url": "https://github.com/serprex/pixi.js.git"
   }
 }

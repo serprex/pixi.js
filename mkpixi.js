@@ -1,7 +1,7 @@
 #!/usr/bin/node
 "use strict";
 var child_process = require("child_process");
-process.chdir(__dirname + "/core")
+process.chdir(__dirname + "/src")
 child_process.execFile("find", [".", "-type", "f"], function(err, stdout, stderr){
 	var files = stdout.split("\n");
 	files.pop();

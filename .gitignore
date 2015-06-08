@@ -20,7 +20,6 @@ npm-debug.log
 
 # project ignores
 !.gitkeep
-*__temp
 node_modules
 docs/
-bin/
+pixi*.js

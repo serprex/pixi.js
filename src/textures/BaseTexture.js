@@ -26,7 +26,7 @@ function BaseTexture(source, scaleMode)
      * @member {number}
      * @readOnly
      */
-    this.width = source ? source.naturalWidth || source.width : 0;
+    this.width = source ? source.naturalWidth || source.width : 1;
 
     /**
      * The height of the base texture set when the image has loaded
@@ -34,7 +34,7 @@ function BaseTexture(source, scaleMode)
      * @member {number}
      * @readOnly
      */
-    this.height = source ? source.naturalHeight || source.height : 0;
+    this.height = source ? source.naturalHeight || source.height : 1;
 
     /**
      * The scale mode to apply when scaling this texture

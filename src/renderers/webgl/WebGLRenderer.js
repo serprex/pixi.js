@@ -242,6 +242,7 @@ WebGLRenderer.prototype.updateTexture = function (texture)
 
     gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, texture.premultipliedAlpha);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, texture.source);
+	texture.source = null;
 
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, texture.scaleMode === CONST.scaleModes.LINEAR ? gl.LINEAR : gl.NEAREST);
 
@@ -259,8 +260,6 @@ WebGLRenderer.prototype.updateTexture = function (texture)
 	var clamp = texture.isPowerOfTwo ? gl.REPEAT : gl.CLAMP_TO_EDGE;
 	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, clamp);
 	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, clamp);
-
-	texture.source = null;
 
     return texture._glTexture;
 };

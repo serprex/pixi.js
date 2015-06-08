@@ -327,10 +327,11 @@ SpriteRenderer.prototype.flush = function ()
 
     for (var i = 0, j = this.currentBatchSize; i < j; i++)
     {
-
         sprite = this.sprites[i];
 
         nextTexture = sprite._texture.baseTexture;
+		if (!nextTexture.source && !nextTexture._glTexture) continue;
+
         nextBlendMode = sprite.blendMode;
         nextShader = sprite.shader || this.shader;
 

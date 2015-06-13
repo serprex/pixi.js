@@ -255,7 +255,8 @@ Sprite.prototype.getBounds = function (matrix)
 */
 Sprite.prototype._renderCanvas = function (renderer)
 {
-    if (this.texture.crop.width <= 0 || this.texture.crop.height <= 0)
+    //  Ignore null sources
+    if (!this.texture.valid || this.texture.crop.width <= 0 || this.texture.crop.height <= 0 || !this.texture.baseTexture.source)
     {
         return;
     }
@@ -265,54 +266,49 @@ Sprite.prototype._renderCanvas = function (renderer)
         renderer.currentBlendMode = this.blendMode;
         renderer.context.globalCompositeOperation = renderer.blendModes[renderer.currentBlendMode];
     }
+	renderer.context.globalAlpha = this.worldAlpha;
 
-    //  Ignore null sources
-    if (this.texture.valid)
-    {
-        renderer.context.globalAlpha = this.worldAlpha;
-
-        // If the texture is trimmed we offset by the trim x/y, otherwise we use the frame dimensions
-        var dx = (this.texture.trim ? this.texture.trim.x - this.anchor.x * this.texture.trim.width : this.anchor.x * -this.texture._frame.width)|0;
-        var dy = (this.texture.trim ? this.texture.trim.y - this.anchor.y * this.texture.trim.height : this.anchor.y * -this.texture._frame.height)|0;
+	// If the texture is trimmed we offset by the trim x/y, otherwise we use the frame dimensions
+	var dx = (this.texture.trim ? this.texture.trim.x - this.anchor.x * this.texture.trim.width : this.anchor.x * -this.texture._frame.width)|0;
+	var dy = (this.texture.trim ? this.texture.trim.y - this.anchor.y * this.texture.trim.height : this.anchor.y * -this.texture._frame.height)|0;
 
 
-        // Allow for pixel rounding
-		renderer.context.setTransform(
-			this.worldTransform.a,
-			this.worldTransform.b,
-			this.worldTransform.c,
-			this.worldTransform.d,
-			this.worldTransform.tx | 0,
-			this.worldTransform.ty | 0
+	// Allow for pixel rounding
+	renderer.context.setTransform(
+		this.worldTransform.a,
+		this.worldTransform.b,
+		this.worldTransform.c,
+		this.worldTransform.d,
+		this.worldTransform.tx | 0,
+		this.worldTransform.ty | 0
+	);
+
+	if (this.tint !== 0xFFFFFF)
+	{
+		if (this.cachedTint !== this.tint)
+		{
+			this.cachedTint = this.tint;
+
+			// TODO clean up caching - how to clean up the caches?
+			this.tintedTexture = CanvasTinter.getTintedTexture(this, this.tint);
+		}
+
+		renderer.context.drawImage(
+			this.tintedTexture,
+			0, 0,
+			this.texture.crop.width, this.texture.crop.height,
+			dx, dy,
+			this.texture.crop.width, this.texture.crop.height
 		);
-
-        if (this.tint !== 0xFFFFFF)
-        {
-            if (this.cachedTint !== this.tint)
-            {
-                this.cachedTint = this.tint;
-
-                // TODO clean up caching - how to clean up the caches?
-                this.tintedTexture = CanvasTinter.getTintedTexture(this, this.tint);
-            }
-
-            renderer.context.drawImage(
-                this.tintedTexture,
-                0, 0,
-                this.texture.crop.width, this.texture.crop.height,
-                dx, dy,
-                this.texture.crop.width, this.texture.crop.height
-            );
-        }
-        else
-        {
-            renderer.context.drawImage(
-                this.texture.baseTexture.source,
-                this.texture.crop.x, this.texture.crop.y,
-                this.texture.crop.width, this.texture.crop.height,
-                dx, dy,
-                this.texture.crop.width, this.texture.crop.height
-            );
-        }
-    }
+	}
+	else
+	{
+		renderer.context.drawImage(
+			this.texture.baseTexture.source,
+			this.texture.crop.x, this.texture.crop.y,
+			this.texture.crop.width, this.texture.crop.height,
+			dx, dy,
+			this.texture.crop.width, this.texture.crop.height
+		);
+	}
 };

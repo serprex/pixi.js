@@ -1,5 +1,5 @@
-var core = require("../../../index"),
-    utils = require('../../../utils/index'),
+var core = require("../../../pixi"),
+    utils = require('../../../utils'),
     CONST = require('../../../const');
 
 /**

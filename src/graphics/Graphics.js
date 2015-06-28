@@ -1,7 +1,7 @@
 var Container = require('../display/Container'),
     CanvasGraphics = require('../renderers/canvas/utils/CanvasGraphics'),
     GraphicsData = require('./GraphicsData'),
-    math = require('../math/index'),
+    math = require('../math'),
     CONST = require('../const');
 
 /**

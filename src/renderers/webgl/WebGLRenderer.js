@@ -1,4 +1,4 @@
-var core = require("../../index"),
+var core = require("../../pixi"),
     SystemRenderer = require('../SystemRenderer'),
     ShaderManager = require('./managers/ShaderManager'),
     MaskManager = require('./managers/MaskManager'),

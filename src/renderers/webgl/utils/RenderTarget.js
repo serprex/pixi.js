@@ -1,5 +1,5 @@
-var core = require("../../../index"),
-    math = require('../../../math/index'),
+var core = require("../../../pixi"),
+    math = require('../../../math'),
     CONST = require('../../../const'),
     StencilMaskStack = require('./StencilMaskStack');
 

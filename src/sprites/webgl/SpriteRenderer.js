@@ -1,4 +1,4 @@
-var core = require("../../index"),
+var core = require("../../pixi"),
 	ObjectRenderer = require('../../renderers/webgl/utils/ObjectRenderer'),
     CONST = require('../../const');
 

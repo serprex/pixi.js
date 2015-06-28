@@ -1,4 +1,4 @@
-var core = require("../../../index");
+var core = require("../../../pixi");
 /**
  * @class
  * @namespace PIXI

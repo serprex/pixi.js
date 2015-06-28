@@ -1,9 +1,9 @@
-var core = require("../index"),
+var core = require("../pixi"),
 	BaseTexture = require('./BaseTexture'),
     Texture = require('./Texture'),
     RenderTarget = require('../renderers/webgl/utils/RenderTarget'),
     CanvasBuffer = require('../renderers/canvas/utils/CanvasBuffer'),
-    math = require('../math/index'),
+    math = require('../math'),
     CONST = require('../const');
 
 /**

@@ -1,4 +1,4 @@
-var CONST = require('../const');
+var CONST = require('./const');
 
 /**
  * @namespace PIXI

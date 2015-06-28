@@ -1,7 +1,7 @@
 var SystemRenderer = require('../SystemRenderer'),
     CanvasMaskManager = require('./utils/CanvasMaskManager'),
-    utils = require('../../utils/index'),
-    math = require('../../math/index'),
+    utils = require('../../utils'),
+    math = require('../../math'),
     CONST = require('../../const');
 
 /**

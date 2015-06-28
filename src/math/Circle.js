@@ -1,5 +1,5 @@
 var Rectangle = require('./Rectangle'),
-    CONST = require('../../const');
+    CONST = require('../const');
 
 /**
  * The Circle object can be used to specify a hit area for displayObjects

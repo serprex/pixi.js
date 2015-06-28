@@ -1,6 +1,6 @@
 var BaseTexture = require('./BaseTexture'),
     TextureUvs = require('./TextureUvs'),
-    math = require('../math/index');
+    math = require('../math');
 
 /**
  * A texture stores the information that represents an image or part of an image. It cannot be added

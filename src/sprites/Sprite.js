@@ -1,4 +1,4 @@
-var math = require('../math/index'),
+var math = require('../math'),
     Texture = require('../textures/Texture'),
     Container = require('../display/Container'),
     CanvasTinter = require('../renderers/canvas/utils/CanvasTinter'),

@@ -1,4 +1,4 @@
-var utils = require('../../../utils/index');
+var utils = require('../../../utils');
 
 /**
  * Utility methods for Sprite/Texture tinting.

@@ -1,4 +1,4 @@
-var math = require('../math/index'),
+var math = require('../math'),
     DisplayObject = require('./DisplayObject');
 
 /**

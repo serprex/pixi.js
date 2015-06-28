@@ -1,6 +1,6 @@
-var core = require("../../index"),
-	utils = require('../../utils/index'),
-    math = require('../../math/index'),
+var core = require("../../pixi"),
+	utils = require('../../utils'),
+    math = require('../../math'),
     CONST = require('../../const'),
     ObjectRenderer = require('../../renderers/webgl/utils/ObjectRenderer'),
     WebGLGraphicsData = require('./WebGLGraphicsData');

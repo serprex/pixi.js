@@ -1,4 +1,4 @@
-var core = require("../../index");
+var core = require("../../pixi");
 /**
  * @class
  * @private
@@ -19,21 +19,14 @@ function WebGLGraphicsData() {
 WebGLGraphicsData.prototype.constructor = WebGLGraphicsData;
 module.exports = WebGLGraphicsData;
 
-/**
- *
- */
 WebGLGraphicsData.prototype.reset = function () {
     this.points.length = 0;
     this.indices.length = 0;
 };
 
-/**
- *
- */
 WebGLGraphicsData.prototype.upload = function () {
     var gl = core.gl;
 
-//    this.lastIndex = graphics.graphicsData.length;
     this.glPoints = new Float32Array(this.points);
 
     gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);

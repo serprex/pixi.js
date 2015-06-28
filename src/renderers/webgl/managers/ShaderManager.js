@@ -1,4 +1,4 @@
-var core = require("../../../index"),
+var core = require("../../../pixi"),
     TextureShader = require('../shaders/TextureShader'),
     ComplexPrimitiveShader = require('../shaders/ComplexPrimitiveShader'),
     PrimitiveShader = require('../shaders/PrimitiveShader');

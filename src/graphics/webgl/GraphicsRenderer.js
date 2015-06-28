@@ -45,8 +45,7 @@ GraphicsRenderer.prototype.destroy = function () {
  */
 GraphicsRenderer.prototype.render = function(graphics)
 {
-    var renderer = this.renderer;
-    var gl = core.gl;
+    var renderer = this.renderer, gl = core.gl;
 
     var shader = renderer.shaderManager.primitiveShader,
         webGLData;
@@ -118,12 +117,12 @@ GraphicsRenderer.prototype.render = function(graphics)
  */
 GraphicsRenderer.prototype.updateGraphics = function(graphics)
 {
-    var gl = core.gl, webGL = graphics._webGL, i;
+    var webGL = graphics._webGL, i;
 
     // if the graphics object does not exist in the webGL context time to create it!
     if (!webGL)
     {
-        webGL = graphics._webGL = {lastIndex:0, data:[], gl:gl};
+        webGL = graphics._webGL = {lastIndex:0, data:[]};
     }
 	else if (graphics.clearDirty)
     {
@@ -144,8 +143,6 @@ GraphicsRenderer.prototype.updateGraphics = function(graphics)
 
     // flag the graphics as not dirty as we are about to update it...
     graphics.dirty = false;
-
-    var webGLData;
 
     // loop through the graphics datas and construct each one..
     // if the object is a complex fill then the new stencil buffer technique will be used
@@ -172,20 +169,18 @@ GraphicsRenderer.prototype.updateGraphics = function(graphics)
             {
                 if (data.points.length >= 6)
                 {
-					webGLData = this.switchMode(webGL, 0);
-					this.buildPoly(data, webGLData);
+					this.buildPoly(data, this.switchMode(webGL, 0));
                 }
             }
 
             if (data.lineWidth > 0)
             {
-                webGLData = this.switchMode(webGL, 0);
-                this.buildLine(data, webGLData);
+                this.buildLine(data, this.switchMode(webGL, 0));
             }
         }
         else
         {
-            webGLData = this.switchMode(webGL, 0);
+            var webGLData = this.switchMode(webGL, 0);
 
             if (data.type === CONST.SHAPES.RECT)
             {
@@ -196,16 +191,12 @@ GraphicsRenderer.prototype.updateGraphics = function(graphics)
         webGL.lastIndex++;
     }
 
-    // upload all the dirty data...
-    for (i = 0; i < webGL.data.length; i++)
-    {
-        webGLData = webGL.data[i];
-
+	webGL.data.forEach(function(webGLData){
         if (webGLData.dirty)
         {
             webGLData.upload();
         }
-    }
+    });
 };
 
 /**

@@ -2,7 +2,7 @@
 "use strict";
 var child_process = require("child_process");
 process.chdir(__dirname + "/src")
-child_process.execFile("find", [".", "-type", "f"], function(err, stdout, stderr){
+child_process.execFile("find", ["-type", "f"], function(err, stdout, stderr){
 	var files = stdout.split("\n");
 	files.pop();
 	files.forEach(function(path, i){

@@ -4,7 +4,6 @@ var CONST = require('./const');
  * @namespace PIXI
  */
 var saidHello = false;
-exports.PolyK=          require('./PolyK');
 
 /**
  * Converts a hex color number to an [R, G, B] array

@@ -1,4 +1,5 @@
 var core = require("../../pixi"),
+	earcut = require("../../earcut"),
 	utils = require('../../utils'),
     math = require('../../math'),
     CONST = require('../../const'),
@@ -171,24 +172,8 @@ GraphicsRenderer.prototype.updateGraphics = function(graphics)
             {
                 if (data.points.length >= 6)
                 {
-                    if (data.points.length < 6 * 2)
-                    {
-                        webGLData = this.switchMode(webGL, 0);
-
-                        var canDrawUsingSimple = this.buildPoly(data, webGLData);
-
-                        if (!canDrawUsingSimple)
-                        {
-                            webGLData = this.switchMode(webGL, 1);
-                            this.buildComplexPoly(data, webGLData);
-                        }
-
-                    }
-                    else
-                    {
-                        webGLData = this.switchMode(webGL, 1);
-                        this.buildComplexPoly(data, webGLData);
-                    }
+					webGLData = this.switchMode(webGL, 0);
+					this.buildPoly(data, webGLData);
                 }
             }
 
@@ -586,68 +571,6 @@ GraphicsRenderer.prototype.buildLine = function (graphicsData, webGLData)
 };
 
 /**
- * Builds a complex polygon to draw
- *
- * @private
- * @param graphicsData {Graphics} The graphics object containing all the necessary properties
- * @param webGLData {object}
- */
-GraphicsRenderer.prototype.buildComplexPoly = function (graphicsData, webGLData)
-{
-    //TODO - no need to copy this as it gets turned into a FLoat32Array anyways..
-    var points = graphicsData.points.slice();
-
-    if (points.length < 6)
-    {
-        return;
-    }
-
-    // get first and last point.. figure out the middle!
-    var indices = webGLData.indices;
-    webGLData.points = points;
-    webGLData.alpha = graphicsData.fillAlpha;
-    utils.hex2rgb(graphicsData.fillColor, webGLData.color);
-
-    // calclate the bounds..
-    var minX = Infinity;
-    var maxX = -Infinity;
-
-    var minY = Infinity;
-    var maxY = -Infinity;
-
-    var x,y;
-
-    // get size..
-    for (var i = 0; i < points.length; i+=2)
-    {
-        x = points[i];
-        y = points[i+1];
-
-        minX = x < minX ? x : minX;
-        maxX = x > maxX ? x : maxX;
-
-        minY = y < minY ? y : minY;
-        maxY = y > maxY ? y : maxY;
-    }
-
-    // add a quad to the end cos there is no point making another buffer!
-    points.push(minX, minY,
-                maxX, minY,
-                maxX, maxY,
-                minX, maxY);
-
-    // push a quad onto the end..
-
-    //TODO - this aint needed!
-    var length = points.length / 2;
-    for (i = 0; i < length; i++)
-    {
-        indices.push( i );
-    }
-
-};
-
-/**
  * Builds a polygon to draw
  *
  * @private
@@ -672,15 +595,9 @@ GraphicsRenderer.prototype.buildPoly = function (graphicsData, webGLData)
     // sort color
     var color = utils.hex2rgb(graphicsData.fillColor);
     var alpha = graphicsData.fillAlpha;
-    var r = color[0] * alpha;
-    var g = color[1] * alpha;
-    var b = color[2] * alpha;
+    var r = color[0] * alpha, g = color[1] * alpha, b = color[2] * alpha;
 
-    var triangles = utils.PolyK.Triangulate(points);
-
-    if (!triangles) {
-        return false;
-    }
+    var triangles = earcut(points);
 
     var vertPos = verts.length / 6;
 
@@ -688,11 +605,11 @@ GraphicsRenderer.prototype.buildPoly = function (graphicsData, webGLData)
 
     for (i = 0; i < triangles.length; i+=3)
     {
-        indices.push(triangles[i] + vertPos);
-        indices.push(triangles[i] + vertPos);
-        indices.push(triangles[i+1] + vertPos);
-        indices.push(triangles[i+2] +vertPos);
-        indices.push(triangles[i+2] + vertPos);
+        indices.push(triangles[i] + vertPos,
+			triangles[i] + vertPos,
+			triangles[i+1] + vertPos,
+			triangles[i+2] +vertPos,
+			triangles[i+2] + vertPos);
     }
 
     for (i = 0; i < length; i++)
@@ -700,6 +617,4 @@ GraphicsRenderer.prototype.buildPoly = function (graphicsData, webGLData)
         verts.push(points[i * 2], points[i * 2 + 1],
                    r, g, b, alpha);
     }
-
-    return true;
 };

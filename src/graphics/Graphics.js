@@ -803,7 +803,7 @@ Graphics.prototype.drawShape = function (shape)
 
     if (data.type === CONST.SHAPES.POLY)
     {
-        data.shape.closed = this.filling;
+        if (!data.shape.closed) data.shape.closed = this.filling;
         this.currentPath = data;
     }
 

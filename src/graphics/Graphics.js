@@ -170,7 +170,7 @@ Graphics.prototype.lineStyle = function (lineWidth, color, alpha)
         if (this.currentPath.shape.points.length)
         {
             // halfway through a line? start a new one!
-            this.drawShape( new math.Polygon( this.currentPath.shape.points.slice(-2) ));
+            this.drawShape(new math.Polygon(this.currentPath.shape.points.slice(-2)));
         }
         else
         {
@@ -193,9 +193,8 @@ Graphics.prototype.lineStyle = function (lineWidth, color, alpha)
   */
 Graphics.prototype.moveTo = function (x, y)
 {
-    this.drawShape(new math.Polygon([x,y]));
-
-    return this;
+	this.filling = false;
+    return this.drawShape(new math.Polygon([x,y], false));
 };
 
 /**
@@ -786,28 +785,24 @@ Graphics.prototype.updateLocalBounds = function ()
  */
 Graphics.prototype.drawShape = function (shape)
 {
-    if (this.currentPath)
-    {
-        // check current path!
-        if (this.currentPath.shape.points.length <= 2)
-        {
-            this.graphicsData.pop();
-        }
-    }
+	// check current path!
+	if (this.currentPath && this.currentPath.shape.points.length <= 2){
+		this.graphicsData.pop();
+	}
 
-    this.currentPath = null;
+	this.currentPath = null;
 
-    var data = new GraphicsData(this.lineWidth, this.lineColor, this.lineAlpha, this.fillColor, this.fillAlpha, this.filling, shape);
+	var data = new GraphicsData(this.lineWidth, this.lineColor, this.lineAlpha, this.fillColor, this.fillAlpha, this.filling, shape);
 
-    this.graphicsData.push(data);
+	this.graphicsData.push(data);
 
-    if (data.type === CONST.SHAPES.POLY)
-    {
-        if (!data.shape.closed) data.shape.closed = this.filling;
-        this.currentPath = data;
-    }
+	if (data.type === CONST.SHAPES.POLY)
+	{
+		if (!data.shape.closed) data.shape.closed = this.filling;
+		this.currentPath = data;
+	}
 
-    this.dirty = true;
+	this.dirty = true;
 
-    return data;
+	return data;
 };

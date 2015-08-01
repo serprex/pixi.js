@@ -10,7 +10,7 @@ var Point = require('./Point'),
  *      arguments passed can be flat x,y values e.g. `new Polygon(x,y, x,y, x,y, ...)` where `x` and `y` are
  *      Numbers.
  */
-function Polygon(points)
+function Polygon(points, closed)
 {
     //if points isn't an array, use arguments as the array
     if (!(points instanceof Array))
@@ -30,7 +30,7 @@ function Polygon(points)
         points = p;
     }
 
-    this.closed = true;
+    this.closed = closed === undefined || closed;
 
     /**
      * An array of the points of this polygon
@@ -57,7 +57,7 @@ module.exports = Polygon;
  */
 Polygon.prototype.clone = function ()
 {
-    return new Polygon(this.points.slice());
+    return new Polygon(this.points.slice(), this.closed);
 };
 
 /**

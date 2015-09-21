@@ -1,4 +1,4 @@
-#!/usr/bin/node
+#!/usr/bin/env node
 "use strict";
 var child_process = require("child_process");
 process.chdir(__dirname + "/src")

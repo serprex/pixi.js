@@ -260,8 +260,6 @@ WebGLRenderer.prototype.updateTexture = function (texture)
 	var clamp = texture.isPowerOfTwo ? gl.REPEAT : gl.CLAMP_TO_EDGE;
 	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, clamp);
 	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, clamp);
-
-    return texture._glTexture;
 };
 
 /**

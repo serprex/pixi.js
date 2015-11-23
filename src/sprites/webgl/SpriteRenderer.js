@@ -26,17 +26,10 @@ function SpriteRenderer(renderer)
 
     /**
      *
-     *
+     * X,Y,R,G,B * 4 (byte/element)
      * @member {number}
      */
-    this.vertSize = 5;
-
-    /**
-     *
-     *
-     * @member {number}
-     */
-    this.vertByteSize = this.vertSize * 4;
+    this.vertByteSize = 5 * 4;
 
     /**
      * The number of images in the SpriteBatch before it flushes.
@@ -94,13 +87,6 @@ function SpriteRenderer(renderer)
         this.indices[i + 4] = j + 2;
         this.indices[i + 5] = j + 3;
     }
-
-    /**
-     *
-     *
-     * @member {boolean}
-     */
-    this.drawing = false;
 
     /**
      *
@@ -168,8 +154,6 @@ SpriteRenderer.prototype.onContextChange = function ()
     this.vertexBuffer = gl.createBuffer();
     this.indexBuffer = gl.createBuffer();
 
-    // 65535 is max index, so 65535 / 6 = 10922.
-
     //upload the index data
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, this.indices, gl.STATIC_DRAW);
@@ -189,6 +173,8 @@ SpriteRenderer.prototype.render = function (sprite)
 {
     var texture = sprite._texture;
 
+    if (!texture.baseTexture.source && !texture.baseTexture._glTexture) return;
+
     //TODO set blend modes..
     // check texture..
     if (this.currentBatchSize >= this.size)
@@ -207,8 +193,8 @@ SpriteRenderer.prototype.render = function (sprite)
     }
 
     // TODO trim??
-    var aX = sprite.anchor.x;
-    var aY = sprite.anchor.y;
+    var aX = sprite.anchor.x,
+        aY = sprite.anchor.y;
 
     var w0, w1, h0, h1;
 
@@ -226,8 +212,8 @@ SpriteRenderer.prototype.render = function (sprite)
     }
     else
     {
-        w0 = (texture._frame.width ) * (1-aX);
-        w1 = (texture._frame.width ) * -aX;
+        w0 = texture._frame.width * (1-aX);
+        w1 = texture._frame.width * -aX;
 
         h0 = texture._frame.height * (1-aY);
         h1 = texture._frame.height * -aY;
@@ -237,29 +223,26 @@ SpriteRenderer.prototype.render = function (sprite)
 
     var worldTransform = sprite.worldTransform;
 
-    var a = worldTransform.a;
-    var b = worldTransform.b;
-    var c = worldTransform.c;
-    var d = worldTransform.d;
-    var tx = worldTransform.tx;
-    var ty = worldTransform.ty;
+    var a = worldTransform.a,
+        b = worldTransform.b,
+        c = worldTransform.c,
+        d = worldTransform.d,
+        tx = worldTransform.tx,
+        ty = worldTransform.ty;
 
-    var colors = this.colors;
-    var positions = this.positions;
+    var colors = this.colors,
+        positions = this.positions;
 
 	// xy
 	positions[index] = a * w1 + c * h1 + tx;
 	positions[index+1] = d * h1 + b * w1 + ty;
 
-	// xy
 	positions[index+5] = a * w0 + c * h1 + tx;
 	positions[index+6] = d * h1 + b * w0 + ty;
 
-	 // xy
 	positions[index+10] = a * w0 + c * h0 + tx;
 	positions[index+11] = d * h0 + b * w0 + ty;
 
-	// xy
 	positions[index+15] = a * w1 + c * h0 + tx;
 	positions[index+16] = d * h0 + b * w1 + ty;
 
@@ -267,15 +250,12 @@ SpriteRenderer.prototype.render = function (sprite)
     positions[index+2] = uvs.x0;
     positions[index+3] = uvs.y0;
 
-    // uv
     positions[index+7] = uvs.x1;
     positions[index+8] = uvs.y1;
 
-     // uv
     positions[index+12] = uvs.x2;
     positions[index+13] = uvs.y2;
 
-    // uv
     positions[index+17] = uvs.x3;
     positions[index+18] = uvs.y3;
 
@@ -300,50 +280,34 @@ SpriteRenderer.prototype.flush = function ()
     }
 
     var gl = core.gl;
-    var shader;
 
     // upload the verts to the buffer
-    if (this.currentBatchSize * 2 > this.size)
-    {
-        gl.bufferSubData(gl.ARRAY_BUFFER, 0, this.vertices);
-    }
-    else
-    {
-        var view = this.positions.subarray(0, this.currentBatchSize * this.vertByteSize);
-        gl.bufferSubData(gl.ARRAY_BUFFER, 0, view);
-    }
+    gl.bufferSubData(gl.ARRAY_BUFFER, 0, this.currentBatchSize * 2 > this.size ?
+        this.vertices : this.positions.subarray(0, this.currentBatchSize * this.vertByteSize));
 
-    var nextTexture, nextBlendMode, nextShader;
-    var batchSize = 0;
     var start = 0;
 
     var currentBaseTexture = null;
     var currentBlendMode = this.renderer.blendModeManager.currentBlendMode;
     var currentShader = null;
 
-    var blendSwap = false;
-    var shaderSwap = false;
-    var sprite;
-
     for (var i = 0, j = this.currentBatchSize; i < j; i++)
     {
-        sprite = this.sprites[i];
+        var sprite = this.sprites[i];
 
-        nextTexture = sprite._texture.baseTexture;
-		if (!nextTexture.source && !nextTexture._glTexture) continue;
+        var nextTexture = sprite._texture.baseTexture;
 
-        nextBlendMode = sprite.blendMode;
-        nextShader = sprite.shader || this.shader;
+        var nextBlendMode = sprite.blendMode;
+        var nextShader = sprite.shader || this.shader;
 
-        blendSwap = currentBlendMode !== nextBlendMode;
-        shaderSwap = currentShader !== nextShader;
+        var blendSwap = currentBlendMode !== nextBlendMode;
+        var shaderSwap = currentShader !== nextShader;
 
         if (currentBaseTexture !== nextTexture || blendSwap || shaderSwap)
         {
-            this.renderBatch(currentBaseTexture, batchSize, start);
+            this.renderBatch(currentBaseTexture, i - start, start);
 
             start = i;
-            batchSize = 0;
             currentBaseTexture = nextTexture;
 
             if (blendSwap)
@@ -356,23 +320,17 @@ SpriteRenderer.prototype.flush = function ()
             {
                 currentShader = nextShader;
 
-                shader = currentShader;
-
                 // set shader function???
-                this.renderer.shaderManager.setShader(shader);
-
-                ///console.log(shader.uniforms.projectionMatrix);
+                this.renderer.shaderManager.setShader(currentShader);
 
                 // both these only need to be set if they are changing..
                 // set the projection
-                gl.uniformMatrix3fv(shader.uniforms.projectionMatrix._location, false, this.renderer.currentRenderTarget.projectionMatrix.toArray(true));
+                gl.uniformMatrix3fv(currentShader.uniforms.projectionMatrix._location, false, this.renderer.currentRenderTarget.projectionMatrix.toArray(true));
             }
         }
-
-        batchSize++;
     }
 
-    this.renderBatch(currentBaseTexture, batchSize, start);
+    this.renderBatch(currentBaseTexture, this.currentBatchSize - start, start);
 
     // then reset the batch!
     this.currentBatchSize = 0;
@@ -455,8 +413,6 @@ SpriteRenderer.prototype.destroy = function ()
     this.indexBuffer = null;
 
     this.currentBaseTexture = null;
-
-    this.drawing = false;
 
     this.textures = null;
     this.blendModes = null;

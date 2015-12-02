@@ -73,18 +73,5 @@ RoundedRectangle.prototype.clone = function ()
  */
 RoundedRectangle.prototype.contains = function (x, y)
 {
-    if (this.width <= 0 || this.height <= 0)
-    {
-        return false;
-    }
-
-    if (x >= this.x && x <= this.x + this.width)
-    {
-        if (y >= this.y && y <= this.y + this.height)
-        {
-            return true;
-        }
-    }
-
-    return false;
+    return this.width > 0 && this.height >0 && x >= this.x && x <= this.x + this.width && y >= this.y && y <= this.y + this.height;
 };

@@ -289,7 +289,8 @@ SpriteRenderer.prototype.flush = function ()
 
     var currentBaseTexture = null;
     var currentBlendMode = this.renderer.blendModeManager.currentBlendMode;
-    var currentShader = null;
+    var currentShader = this.renderer.shaderManager.currentShader;
+	var uniformDirty = true;
 
     for (var i = 0, j = this.currentBatchSize; i < j; i++)
     {
@@ -301,7 +302,7 @@ SpriteRenderer.prototype.flush = function ()
         var nextShader = sprite.shader || this.shader;
 
         var blendSwap = currentBlendMode !== nextBlendMode;
-        var shaderSwap = currentShader !== nextShader;
+        var shaderSwap = currentShader !== nextShader || uniformDirty;
 
         if (currentBaseTexture !== nextTexture || blendSwap || shaderSwap)
         {
@@ -316,16 +317,12 @@ SpriteRenderer.prototype.flush = function ()
                 this.renderer.blendModeManager.setBlendMode( currentBlendMode );
             }
 
-            if (shaderSwap)
-            {
-                currentShader = nextShader;
-
-                // set shader function???
-                this.renderer.shaderManager.setShader(currentShader);
-
-                // both these only need to be set if they are changing..
-                // set the projection
-                gl.uniformMatrix3fv(currentShader.uniforms.projectionMatrix._location, false, this.renderer.currentRenderTarget.projectionMatrix.toArray(true));
+            if (shaderSwap && (this.renderer.shaderManager.setShader(nextShader) || uniformDirty)){
+				uniformDirty = false;
+				currentShader = nextShader;
+				// both these only need to be set if they are changing..
+				// set the projection
+				gl.uniformMatrix3fv(currentShader.uniforms.projectionMatrix._location, false, this.renderer.currentRenderTarget.projectionMatrix.toArray(true));
             }
         }
     }

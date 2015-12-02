@@ -78,10 +78,7 @@ Ellipse.prototype.contains = function (x, y)
     var normx = ((x - this.x) / this.width),
         normy = ((y - this.y) / this.height);
 
-    normx *= normx;
-    normy *= normy;
-
-    return (normx + normy <= 1);
+    return normx*normx + normy*normy <= 1;
 };
 
 /**

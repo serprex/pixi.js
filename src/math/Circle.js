@@ -71,10 +71,7 @@ Circle.prototype.contains = function (x, y)
         dy = (this.y - y),
         r2 = this.radius * this.radius;
 
-    dx *= dx;
-    dy *= dy;
-
-    return (dx + dy <= r2);
+    return dx*dx+dy*dy <= r2*r2;
 };
 
 /**

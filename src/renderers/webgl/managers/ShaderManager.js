@@ -13,24 +13,15 @@ function ShaderManager(renderer)
 	this.renderer = renderer;
 
     /**
-     * @member {number}
-     */
-    this.maxAttibs = 10;
-
-    /**
      * @member {any[]}
      */
-    this.attribState = [];
+    this.attribState = [false, false, false, false, false, false, false, false, false];
 
     /**
      * @member {any[]}
      */
     this.tempAttribState = [];
 
-    for (var i = 0; i < this.maxAttibs; i++)
-    {
-        this.attribState[i] = false;
-    }
 
     /**
      * @member {any[]}

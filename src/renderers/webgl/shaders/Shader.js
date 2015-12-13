@@ -42,13 +42,13 @@ function Shader(shaderManager, vertexSrc, fragmentSrc, uniforms, attributes)
      */
     this.fragmentSrc = fragmentSrc;
 
-    this.init();
+    this.init(shaderManager);
 }
 
 Shader.prototype.constructor = Shader;
 module.exports = Shader;
 
-Shader.prototype.init = function ()
+Shader.prototype.init = function (shaderManager)
 {
     this.compile();
 
@@ -56,6 +56,11 @@ Shader.prototype.init = function ()
 
     this.cacheUniformLocations(Object.keys(this.uniforms));
     this.cacheAttributeLocations(Object.keys(this.attributes));
+
+	if (shaderManager.currentShader){
+		core.gl.useProgram(shaderManager.currentShader.program);
+		shaderManager.setAttribs(shaderManager.currentShader.attributes);
+	}
 };
 
 Shader.prototype.cacheUniformLocations = function (keys)

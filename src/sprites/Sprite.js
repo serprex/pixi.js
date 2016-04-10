@@ -57,8 +57,6 @@ function Sprite(texture)
      */
     this.shader = null;
 
-    this.cachedTint = 0xFFFFFF;
-
     // call texture setter
     this.texture = texture || Texture.EMPTY;
 }
@@ -137,7 +135,6 @@ Object.defineProperties(Sprite.prototype, {
             }
 
             this._texture = value;
-            this.cachedTint = 0xFFFFFF;
         }
     },
 });
@@ -283,32 +280,11 @@ Sprite.prototype._renderCanvas = function (renderer)
 		this.worldTransform.ty | 0
 	);
 
-	if (this.tint !== 0xFFFFFF)
-	{
-		if (this.cachedTint !== this.tint)
-		{
-			this.cachedTint = this.tint;
-
-			// TODO clean up caching - how to clean up the caches?
-			this.tintedTexture = CanvasTinter.getTintedTexture(this, this.tint);
-		}
-
-		renderer.context.drawImage(
-			this.tintedTexture,
-			0, 0,
-			this.texture.crop.width, this.texture.crop.height,
-			dx, dy,
-			this.texture.crop.width, this.texture.crop.height
-		);
-	}
-	else
-	{
-		renderer.context.drawImage(
-			this.texture.baseTexture.source,
-			this.texture.crop.x, this.texture.crop.y,
-			this.texture.crop.width, this.texture.crop.height,
-			dx, dy,
-			this.texture.crop.width, this.texture.crop.height
-		);
-	}
+	renderer.context.drawImage(
+		this.tint === 0xffffff ? this.texture.baseTexture.source : CanvasTinter.getTintedTexture(this, this.tint),
+		this.texture.crop.x, this.texture.crop.y,
+		this.texture.crop.width, this.texture.crop.height,
+		dx, dy,
+		this.texture.crop.width, this.texture.crop.height
+	);
 };

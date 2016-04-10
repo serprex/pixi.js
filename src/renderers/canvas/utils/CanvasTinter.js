@@ -17,38 +17,9 @@ var CanvasTinter = exports;
 CanvasTinter.getTintedTexture = function (sprite, color)
 {
     var texture = sprite.texture;
-
-    color = CanvasTinter.roundColor(color);
-
-    var stringColor = utils.hex2string(color);
-
-    texture.tintCache = texture.tintCache || {};
-
-    if (texture.tintCache[stringColor])
-    {
-        return texture.tintCache[stringColor];
-    }
-
-     // clone texture..
-    var canvas = CanvasTinter.canvas || document.createElement('canvas');
-
+    if (!CanvasTinter.canvas) CanvasTinter.canvas = document.createElement('canvas');
+	var canvas = CanvasTinter.canvas;
     CanvasTinter.tintMethod(texture, color, canvas);
-
-    if (CanvasTinter.convertTintToImage)
-    {
-        // is this better?
-        var tintImage = new Image();
-        tintImage.src = canvas.toDataURL();
-
-        texture.tintCache[stringColor] = tintImage;
-    }
-    else
-    {
-        texture.tintCache[stringColor] = canvas;
-        // if we are not converting the texture to an image then we need to lose the reference to the canvas
-        CanvasTinter.canvas = null;
-    }
-
     return canvas;
 };
 
@@ -68,7 +39,7 @@ CanvasTinter.tintWithMultiply = function (texture, color, canvas)
     canvas.width = crop.width;
     canvas.height = crop.height;
 
-    context.fillStyle = '#' + ('00000' + ( color | 0).toString(16)).substr(-6);
+    context.fillStyle = utils.hex2string(color);
 
     context.fillRect(0, 0, crop.width, crop.height);
 
@@ -118,7 +89,7 @@ CanvasTinter.tintWithOverlay = function (texture, color, canvas)
     canvas.height = crop.height;
 
     context.globalCompositeOperation = 'copy';
-    context.fillStyle = '#' + ('00000' + ( color | 0).toString(16)).substr(-6);
+    context.fillStyle = utils.hex2string(color);
     context.fillRect(0, 0, crop.width, crop.height);
 
     context.globalCompositeOperation = 'destination-atop';
@@ -182,38 +153,6 @@ CanvasTinter.tintWithPerPixel = function (texture, color, canvas)
 
     context.putImageData(pixelData, 0, 0);
 };
-
-/**
- * Rounds the specified color according to the CanvasTinter.cacheStepsPerColorChannel.
- *
- * @param color {number} the color to round, should be a hex color
- */
-CanvasTinter.roundColor = function (color)
-{
-    var step = CanvasTinter.cacheStepsPerColorChannel;
-
-    var rgbValues = utils.hex2rgb(color);
-
-    rgbValues[0] = Math.min(255, (rgbValues[0] / step) * step);
-    rgbValues[1] = Math.min(255, (rgbValues[1] / step) * step);
-    rgbValues[2] = Math.min(255, (rgbValues[2] / step) * step);
-
-    return utils.rgb2hex(rgbValues);
-};
-
-/**
- * Number of steps which will be used as a cap when rounding colors.
- *
- * @member
- */
-CanvasTinter.cacheStepsPerColorChannel = 8;
-
-/**
- * Tint cache boolean flag.
- *
- * @member
- */
-CanvasTinter.convertTintToImage = false;
 
 /**
  * Whether or not the Canvas BlendModes are supported, consequently the ability to tint using the multiply method.

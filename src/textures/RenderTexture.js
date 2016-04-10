@@ -214,6 +214,10 @@ RenderTexture.prototype.render = function (displayObject, matrix)
 	});
 
     this.renderer.renderDisplayObject(displayObject, this.renderer.type === CONST.RENDERER_TYPE.WEBGL ? this.renderTarget : this.renderTarget.context);
+	if (this.renderer.type == CONST.RENDERER_TYPE.CANVAS)
+	{
+		this.tintCache = {};
+	}
 	if (this.renderer.renderTarget)
 	{
 		this.renderer.setRenderTarget(this.renderer.renderTarget);

@@ -20,7 +20,7 @@ CanvasTinter.getTintedTexture = function (sprite, color)
 
     color = CanvasTinter.roundColor(color);
 
-    var stringColor = '#' + ('00000' + ( color | 0).toString(16)).substr(-6);
+    var stringColor = utils.hex2string(color);
 
     texture.tintCache = texture.tintCache || {};
 
@@ -32,7 +32,6 @@ CanvasTinter.getTintedTexture = function (sprite, color)
      // clone texture..
     var canvas = CanvasTinter.canvas || document.createElement('canvas');
 
-    //CanvasTinter.tintWithPerPixel(texture, stringColor, canvas);
     CanvasTinter.tintMethod(texture, color, canvas);
 
     if (CanvasTinter.convertTintToImage)
